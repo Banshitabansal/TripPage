@@ -39,6 +39,7 @@ const TripPage2 = () => {
   const [currency, setCurrency] = useState('');
   const [paymentId, setPaymentId] = useState('');
   const [serialNo, setSerialNo] = useState('');
+  const [deletedEntries, setDeletedEntries] = useState([]);
   
 
   //fetch employee id from googlesheet
@@ -49,7 +50,6 @@ const TripPage2 = () => {
           `https://sheets.googleapis.com/v4/spreadsheets/${GOOGLE_SHEET_ID}/values/${RANGE}?key=${GOOGLE_API_KEY}`
         );
         const data = response.data.values;
-        console.log("data",data);
         const formattedOptions = data.map((row) => ({
           value: row[0], 
           label: `${row[0]} - ${row[1]}`, 
@@ -178,7 +178,7 @@ const TripPage2 = () => {
   //save button
   const handleFormSubmit = (event) => {
     event.preventDefault();
-    const newEntry = { currency, mode, amount, remarks,serialNo};
+    const newEntry = { currency, mode, amount, remarks, serialNo};
   
     if (editIndex >= 0) {
       const updatedEntries = [...entries];
@@ -206,8 +206,12 @@ const TripPage2 = () => {
 
   //delete button
   const handleDelete = (index) => {
+    const entryToDelete = entries[index];
+    setDeletedEntries([...deletedEntries, entryToDelete.serialNo]);
     setEntries(entries.filter((_, i) => i !== index));
+    console.log("delete",deletedEntries)
   };
+ 
 
 
   //clear button
@@ -236,8 +240,7 @@ const TripPage2 = () => {
   
       if (response.data.success) {
         const paymentData = response.data.data;
-        console.log('Payment data:', paymentData);
-  
+        
         const formattedEntries = paymentData.map((data, index) => ({
           currency: { label: data[8] },
           mode: data[9],
@@ -252,23 +255,18 @@ const TripPage2 = () => {
           const employeeIds = firstData[3]?.split(',') || [];
           const employeeNames = firstData[4]?.split(',') || [];
           
-          console.log(firstData)
-          console.log('id',employeeIds)
-          console.log('iname  ',employeeNames)
           const employeeData = employeeIds.map((id, index) => ({
             id: id.trim(),
             name: employeeNames[index]?.trim(),
           }));
 
-          console.log("epdata",employeeData)
           const selectedOptions = employeeData.map(emp => ({
             value: emp.id,
             label: `${emp.id} - ${emp.name}`,
           }));
 
           const formattedData = employeeIds.map((id, index) => `${id}-${employeeNames[index]}`).join(' , ');
-          console.log("formattedData",formattedData);
-          console.log("selectedOptions",selectedOptions);
+      
           setSelectedOptions(selectedOptions);
           setSelectOption(firstData[5]);
           setSelectOptions(firstData[6]);
@@ -288,13 +286,9 @@ const TripPage2 = () => {
   const handleUpdateData = async (entries) => {
     try {
       console.log('Received parameters:', { entries }); 
-      console.log("emp",selectedOptions);
 
       const employeeIds = groupValue.split(', ').map(entry => entry.split(' - ')[0]);
       const employeeNames = groupValue.split(', ').map(entry => entry.split(' - ')[1]);
-      console.log("groupValue",groupValue);
-      console.log("employeeIds",employeeIds);
-      console.log("employeeNames",employeeNames);
 
       for (const entry of entries) {
 
@@ -312,16 +306,18 @@ const TripPage2 = () => {
           mode: entry.mode,
           amount: entry.amount,
           remarks: entry.remarks,
+          deletedEntries,
         };
         
         console.log('Data sent for update:', entryData);
         
-        const response = await axios.put(url, entryData);
         
+        const response = await axios.put(url, entryData);
         console.log('Data update request sent:', response);
         console.log('Data updated successfully:', response.data);
       }
-
+      const response = await axios.put(url, entryData);
+      
     } catch (error) {
       console.error('Error updating data:', error);
     }

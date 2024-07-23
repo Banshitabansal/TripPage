@@ -40,8 +40,8 @@ const updateSheetData = async (auth, rowIndex, updateData) => {
 };
 
 app.put('/updateGoogleSheet', async (req, res) => {
-  const { paymentId, planId, serialNo, employeeIds, employeeNames, selectOption, selectOptions, selectSR,  currency, mode, amount, remarks } = req.body;
-  console.log("pay",req.body)
+  const { paymentId, planId, serialNo, employeeIds, employeeNames, selectOption, selectOptions, selectSR,  currency, mode, amount, remarks, deletedEntries} = req.body;
+  console.log("delete",deletedEntries);
   if (!paymentId || !serialNo) {
     console.error('Invalid data format:', req.body);
     return res.status(400).send('Invalid data format');
@@ -54,7 +54,6 @@ app.put('/updateGoogleSheet', async (req, res) => {
     const rowIndex = sheetData.findIndex(
       row => row[0] === paymentId && row[2] === serialNo
     ) + 1;
-    console.log("row",rowIndex);
     if (rowIndex === -1) {
       console.error('Entry not found:', { paymentId, serialNo });
       return res.status(404).send('Entry not found');
