@@ -310,14 +310,18 @@ const TripPage2 = () => {
         };
         
         console.log('Data sent for update:', entryData);
-        
-        
         const response = await axios.put(url, entryData);
         console.log('Data update request sent:', response);
         console.log('Data updated successfully:', response.data);
       }
-      const response = await axios.put(url, entryData);
-      
+      const Data = {
+        paymentId,
+        deletedEntries,
+      }
+
+      const response = await axios.post('http://localhost:3003/deleteGoogleSheet', Data);
+      setDeletedEntries([]);
+
     } catch (error) {
       console.error('Error updating data:', error);
     }

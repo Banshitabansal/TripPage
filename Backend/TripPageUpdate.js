@@ -29,7 +29,7 @@ async function getSheetData(auth) {
 
 
 const updateSheetData = async (auth, rowIndex, updateData) => {
-  const range = `Entries!A${rowIndex + 1}:L${rowIndex + 1}`;
+  const range = `Entries!A${rowIndex + 1}:M${rowIndex + 1}`;
   await sheets.spreadsheets.values.update({
     auth,
     spreadsheetId: SHEET_ID,
@@ -71,6 +71,66 @@ app.put('/updateGoogleSheet', async (req, res) => {
     res.status(500).send('Error updating data');
   }
 });
+
+
+//delete data from googlesheet
+const deleteData = async (req, res) => {
+  try {
+    const { paymentId, deletedEntries } = req.body; 
+    console.log(req.body)
+
+
+    console.log(req.body);
+    
+    const getRows = await sheets.spreadsheets.values.get({
+      auth,
+      spreadsheetId: SHEET_ID,
+      range: 'Entries!A:M', 
+    });
+    
+    const rows = getRows.data.values;
+    const dataRows = rows.slice(1);
+    
+    for (let entry of deletedEntries) {
+      
+      let rowIndex = -1;
+      for (let i = 0; i < dataRows.length; i++) {
+        const [paymentID, planID, serialNO] = dataRows[i];
+        console.log(`Checking row ${i + 1}: payment=${paymentID}, sr=${serialNO}`);
+        if (paymentID === paymentId && serialNO === entry ) {
+          rowIndex = i + 1; 
+          break;
+        }
+      }
+      
+      if (rowIndex !== -1) {
+       
+        const range = `Entries!M${rowIndex + 1}`; 
+        const update = await sheets.spreadsheets.values.update({
+          auth,
+          spreadsheetId: SHEET_ID,
+          range: range,
+          valueInputOption: 'USER_ENTERED',
+          resource: {
+            values: [['Deleted']], 
+          },
+        });
+
+        console.log(`Row ${rowIndex} marked as deleted`);
+      } else {
+        console.log(`Row with sr=${entry} and date=${paymentId} not found`);
+      }
+    }
+    
+    res.status(200).send('Cells updated successfully');
+  } catch (error) {
+    console.error('Error updating cell in Google Sheets:', error);
+    res.status(500).send('An error occurred while updating the cell.');
+  }
+};
+
+
+app.post('/deleteGoogleSheet',deleteData)
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);

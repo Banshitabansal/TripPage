@@ -9,10 +9,10 @@ app.use(cors());
 app.use(express.json());
 
 const GOOGLE_SHEET_ID = '1aDOWPqem6US77ATiVTV1sgx2bq8RWVyYzgnMgzIW3k8';
-const RANGE = 'Entries!A2:L';
+const RANGE = 'Entries!A2:M';
 
 const auth = new google.auth.GoogleAuth({
-    keyFile: './secret.json', 
+    keyFile: './secret.json',
     scopes: ['https://www.googleapis.com/auth/spreadsheets'],
 });
 
@@ -28,13 +28,17 @@ app.get('/fetch', async (req, res) => {
         });
 
         const data = response.data.values;
-        
-        const filteredData = data.filter(row => row[0] === paymentId);
+
+        // Filter out rows where column 0 is the paymentId and column 12 is not '1' (Deleted)
+        const filteredData = data.filter(row => row[0] === paymentId && row[12] !== 'Deleted');
+
+        console.log("f",filteredData)
+        console.log("d",data)
 
         if (filteredData.length > 0) {
             res.json({ success: true, data: filteredData });
         } else {
-            res.json({ success: false, message: 'Payment ID not found' });
+            res.json({ success: false, message: 'Payment ID not found or marked as deleted' });
         }
     } catch (error) {
         console.error('Error fetching data from Google Sheets:', error);
