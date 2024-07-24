@@ -228,6 +228,7 @@ const TripPage2 = () => {
     setEntries([]);
     setCurrency(''); 
     setEditIndex(-1);
+    setPaymentId('');
   };
 
 
