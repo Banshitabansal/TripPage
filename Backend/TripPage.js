@@ -1,7 +1,9 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import cors from 'cors'; 
+import cors from 'cors';
+import mongoose from 'mongoose';
 import { google } from 'googleapis';
+import Entry from './models/Entry.js';
 
 const app = express();
 const port = 3002;
@@ -12,12 +14,22 @@ app.use(cors());
 const SHEET_ID = '1aDOWPqem6US77ATiVTV1sgx2bq8RWVyYzgnMgzIW3k8';
 const RANGE = 'Entries!A2:L'; 
 
+// MongoDB connection
+mongoose.connect('mongodb://127.0.0.1:27017/Entries', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+}).then(() => {
+  console.log('Connected to MongoDB');
+}).catch((error) => {
+  console.error('Error connecting to MongoDB:', error);
+});
+
 async function appendData(auth, data) {
   const sheets = google.sheets({ version: 'v4', auth });
   const resource = {
     values: data,
   };
-  sheets.spreadsheets.values.append({
+  await sheets.spreadsheets.values.append({
     spreadsheetId: SHEET_ID,
     range: RANGE,
     valueInputOption: 'USER_ENTERED',
@@ -52,7 +64,14 @@ app.post('/submit', async (req, res) => {
       row.amount,
       row.remarks
     ]);
+
+    // Save to Google Sheets
     await appendData(authClient, formattedData);
+
+    // Save to MongoDB
+    const entries = data.map(row => new Entry(row));
+    await Entry.insertMany(entries);
+
     res.status(200).send('Data submitted successfully');
   } catch (error) {
     console.error('Error submitting data:', error);
