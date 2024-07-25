@@ -64,7 +64,7 @@ app.get('/fetch', async (req, res) => {
                 entry.mode,
                 entry.amount,
                 entry.remarks,
-                entry.status ? 'Deleted' : '',
+                entry.status,
             ])
         ];
 
