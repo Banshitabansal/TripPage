@@ -37,6 +37,36 @@ async function appendData(auth, data) {
   });
 }
 
+async function fetchLastIdsFromGoogleSheets(auth) {
+  const sheets = google.sheets({ version: 'v4', auth });
+  const response = await sheets.spreadsheets.values.get({
+    spreadsheetId: SHEET_ID,
+    range: RANGE,
+  });
+
+  const rows = response.data.values;
+  let lastPaymentId = 0;
+  let lastPlanID = 0;
+
+  if (rows && rows.length > 0) {
+    const lastRow = rows[rows.length - 1];
+    lastPaymentId = parseInt(lastRow[0].split('-')[1], 10) || 0;
+    lastPlanID = parseInt(lastRow[1].split('-')[1], 10) || 0;
+  }
+
+  return { lastPaymentId, lastPlanID };
+}
+
+async function fetchLastIdsFromMongoDB() {
+  const lastEntry = await Entry.findOne().sort({ _id: -1 }).exec();
+  if (lastEntry) {
+    const lastPaymentId = parseInt(lastEntry.paymentId.split('-')[1], 10) || 0;
+    const lastPlanID = parseInt(lastEntry.planID.split('-')[1], 10) || 0;
+    return { lastPaymentId, lastPlanID };
+  }
+  return { lastPaymentId: 0, lastPlanID: 0 };
+}
+
 app.post('/submit', async (req, res) => {
   const { data } = req.body;
   if (!data || !Array.isArray(data)) {
@@ -76,6 +106,28 @@ app.post('/submit', async (req, res) => {
   } catch (error) {
     console.error('Error submitting data:', error);
     res.status(500).send('Error submitting data');
+  }
+});
+
+app.get('/getLastIds', async (req, res) => {
+  try {
+    const auth = new google.auth.GoogleAuth({
+      keyFile: './secret.json',
+      scopes: ['https://www.googleapis.com/auth/spreadsheets'],
+    });
+
+    const authClient = await auth.getClient();
+    const googleSheetIds = await fetchLastIdsFromGoogleSheets(authClient);
+    const mongoDBIds = await fetchLastIdsFromMongoDB();
+
+    // Compare and determine the highest IDs
+    const lastPaymentId = Math.max(googleSheetIds.lastPaymentId, mongoDBIds.lastPaymentId);
+    const lastPlanID = Math.max(googleSheetIds.lastPlanID, mongoDBIds.lastPlanID);
+
+    res.json({ lastPaymentId, lastPlanID });
+  } catch (error) {
+    console.error('Error fetching last IDs:', error);
+    res.status(500).send('Internal Server Error');
   }
 });
 

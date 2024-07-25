@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
   Autocomplete, Box, TextField, InputLabel, MenuItem,
   FormControl, Select, Button, Dialog, DialogActions,
-  DialogContent, DialogTitle, Stack, createSvgIcon
+  DialogContent, DialogTitle, Stack, createSvgIcon, useTheme
 } from '@mui/material';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -21,6 +21,7 @@ const config = {
 };
 
 const TripPage2 = () => {
+  const theme = useTheme();
   const [options, setOptions] = useState([]);
   const [currencyOptions, setCurrencyOptions] = useState([]);
   const [selectedOptions, setSelectedOptions] = useState([]);
@@ -341,8 +342,8 @@ const TripPage2 = () => {
         </Button>
       </nav>
 
-      <div className='FormContainer'>
-        <div>
+      <div className='FormContainer' style={{ color: theme.palette.text.primary}}>
+        <div style={{ color: theme.palette.text.primary}}>
           <Autocomplete
             multiple
             size='small'
@@ -359,6 +360,7 @@ const TripPage2 = () => {
                 </span>
               ))
             }
+            style={{ color: theme.palette.text.primary}}
             sx={{
               width: 300,
               position: 'absolute',

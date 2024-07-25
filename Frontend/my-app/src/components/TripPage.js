@@ -28,7 +28,7 @@ const TripPage = () => {
   const [selectOption, setSelectOption] = useState('');
   const [selectOptions, setSelectOptions] = useState('');
   const [selectSR, setSelectSR] = useState('');
-  const [planID, setSelectPlanID] = useState(1);
+  const [planID, setSelectPlanID] = useState('');
   const [open, setOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [mode, setMode] = useState('');
@@ -37,7 +37,7 @@ const TripPage = () => {
   const [entries, setEntries] = useState([]);
   const [editIndex, setEditIndex] = useState(-1);
   const [currency, setCurrency] = useState('');
-  const [paymentId, setPaymentId] = useState(1);
+  const [paymentId, setPaymentId] = useState('');
   
 
   //fetch employee id from googlesheet
@@ -219,49 +219,81 @@ const TripPage = () => {
     setEntries([]);
     setCurrency(''); 
     setEditIndex(-1);
+    setPaymentId('');
+    setSelectPlanID('');
   };
 
 
   //submit button
   const submitToGoogleSheets = async () => {
-    const formData = {
-      selectOption,
-      selectOptions,
-      selectSR,
-      paymentId: `PAY-${String(paymentId).padStart(5, '0')}`
-    };
-  
-    const employeeIds = groupValue.split(', ').map(entry => entry.split(' - ')[0]);
-    const employeeNames = groupValue.split(', ').map(entry => entry.split(' - ')[1]);
-  
-    const combinedData = entries.map((entry, index) => {
-      const { currency, mode, amount, remarks, serialNo } = entry;
-      return {
-        ...formData,
-        planID: `PLN-${String(planID + index).padStart(3, '0')}`,
-        employeeId: employeeIds.join(', '), 
-        employeeName: employeeNames.join(', '), 
-        currency: currency?.value || currency,
-        mode,
-        amount,
-        remarks,
-        serialNo: serialNo || index + 1
-      };
-    });
-  
-    setPaymentId(paymentId + 1);
-    setSelectPlanID(planID + entries.length);
-
     try {
-      const response = await axios.post('http://localhost:3002/submit', {
-        data: combinedData
+      // Fetch the last paymentId and planID from the backend
+      const response = await axios.get('http://localhost:3002/getLastIds');
+      const { lastPaymentId, lastPlanID } = response.data;
+
+      // Increment the last paymentId and planID by 1
+      const newPaymentId = lastPaymentId + 1;
+      const newPlanID = lastPlanID + 1;
+
+      const formData = {
+        selectOption,
+        selectOptions,
+        selectSR,
+        paymentId: `PAY-${String(newPaymentId).padStart(5, '0')}`
+      };
+
+      const employeeIds = groupValue.split(', ').map(entry => entry.split(' - ')[0]);
+      const employeeNames = groupValue.split(', ').map(entry => entry.split(' - ')[1]);
+
+      const combinedData = entries.map((entry, index) => {
+        const { currency, mode, amount, remarks, serialNo } = entry;
+        return {
+          ...formData,
+          planID: `PLN-${String(newPlanID + index).padStart(3, '0')}`,
+          employeeId: employeeIds.join(', '), 
+          employeeName: employeeNames.join(', '), 
+          currency: currency?.value || currency,
+          mode,
+          amount,
+          remarks,
+          serialNo: serialNo || index + 1
+        };
       });
-      console.log('Data submitted successfully:', response.data);
+
+      // Update state with the new values
+      setPaymentId(newPaymentId);
+      setSelectPlanID(newPlanID + entries.length);
+
+      // Submit the combined data to Google Sheets
+      try {
+        const submitResponse = await axios.post('http://localhost:3002/submit', {
+          data: combinedData
+        });
+        console.log('Data submitted successfully:', submitResponse.data);
+      } catch (error) {
+        console.error('Error submitting data:', error);
+      }
     } catch (error) {
-      console.error('Error submitting data:', error);
+      console.error('Error fetching last IDs:', error);
     }
   };
+
+  // useEffect to initialize the fetch of the last IDs on component mount
+  useEffect(() => {
+    const fetchLastIds = async () => {
+      try {
+        const response = await axios.get('http://localhost:3002/getLastIds');
+        const { lastPaymentId, lastPlanID } = response.data;
+        setPaymentId(lastPaymentId);
+        setSelectPlanID(lastPlanID);
+      } catch (error) {
+        console.error('Error fetching last IDs:', error);
+      }
+    };
   
+    fetchLastIds();
+  }, []);
+
   
   return (
     <div className={`ModalContainer ${isDarkMode ? 'dark-mode' : 'light-mode'}`}>
