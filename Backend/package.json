@@ -3,13 +3,8 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js",
-    "Mongo": "nodemon Mongo.js",
-    "fetchdata": "nodemon fetchdata.js",
-    "TripPage": "nodemon TripPage.js",
-    "TripPageFetch": "nodemon TripPageFetch.js",
-    "TripPageUpdate": "nodemon TripPageUpdate.js"
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js"
   },
   "keywords": [],
   "author": "",

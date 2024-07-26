@@ -228,7 +228,7 @@ const TripPage = () => {
   const submitToGoogleSheets = async () => {
     try {
       // Fetch the last paymentId and planID from the backend
-      const response = await axios.get('http://localhost:3002/getLastIds');
+      const response = await axios.get('http://localhost:3001/api/getLastIds');
       const { lastPaymentId, lastPlanID } = response.data;
 
       // Increment the last paymentId and planID by 1
@@ -266,7 +266,7 @@ const TripPage = () => {
 
       // Submit the combined data to Google Sheets
       try {
-        const submitResponse = await axios.post('http://localhost:3002/submit', {
+        const submitResponse = await axios.post('http://localhost:3001/api/submit', {
           data: combinedData
         });
         console.log('Data submitted successfully:', submitResponse.data);

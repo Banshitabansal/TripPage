@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import {
   Autocomplete, Box, TextField, InputLabel, MenuItem,
   FormControl, Select, Button, Dialog, DialogActions,
-  DialogContent, DialogTitle, Stack, createSvgIcon, useTheme
+  DialogContent, DialogTitle, Stack, createSvgIcon
 } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
@@ -237,7 +238,7 @@ const TripPage2 = () => {
   const fetchPaymentData = async () => {
     try {
       console.log(`Fetching payment data for paymentId: ${paymentId}`);
-      const response = await axios.get(`http://localhost:3001/fetch?paymentId=${paymentId}`);
+      const response = await axios.get(`http://localhost:3001/api/fetch?paymentId=${paymentId}`);
       console.log('Response received:', response.data);
   
       if (response.data.success) {
@@ -294,7 +295,7 @@ const TripPage2 = () => {
 
       for (const entry of entries) {
 
-        const url = `http://localhost:3003/updateGoogleSheet?paymentId=${paymentId}&serialNo=${serialNo}`;
+        const url = `http://localhost:3001/api/updateGoogleSheet?paymentId=${paymentId}&serialNo=${serialNo}`;
         const entryData = {
           paymentId: paymentId,
           planID: planID,
@@ -321,7 +322,7 @@ const TripPage2 = () => {
         deletedEntries,
       }
 
-      const response = await axios.post('http://localhost:3003/deleteGoogleSheet', Data);
+      const response = await axios.post('http://localhost:3001/api/deleteGoogleSheet', Data);
       setDeletedEntries([]);
 
     } catch (error) {
@@ -342,7 +343,7 @@ const TripPage2 = () => {
         </Button>
       </nav>
 
-      <div className='FormContainer' style={{ color: theme.palette.text.primary}}>
+      <div className='FormContainer'>
         <div style={{ color: theme.palette.text.primary}}>
           <Autocomplete
             multiple
@@ -360,7 +361,6 @@ const TripPage2 = () => {
                 </span>
               ))
             }
-            style={{ color: theme.palette.text.primary}}
             sx={{
               width: 300,
               position: 'absolute',
@@ -510,7 +510,7 @@ const TripPage2 = () => {
         <h1>Trip Payment Request</h1>
         <div className='TableContainer'>
 
-          <Dialog open={open} onClose={handleClose}>
+          <Dialog open={open} onClose={handleClose} >
             <form onSubmit={handleFormSubmit} className='Dialog'>
               <DialogTitle className='Title'>ADD PAYMENT REQUEST ENTRY</DialogTitle>
               <DialogContent>
