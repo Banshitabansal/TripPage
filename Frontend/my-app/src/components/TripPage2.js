@@ -543,7 +543,7 @@ const TripPage2 = () => {
             </tbody>
           </table>
         </div>
-        <div className='btn'>
+        <div className='btn2'>
           <Button onClick={() => handleUpdateData(entries)}>Update</Button>
           <Button type='clear' onClick={handleClear}>CLEAR</Button>
           <Button type='fetch' onClick={fetchPaymentData}>Fetch</Button>

@@ -148,11 +148,21 @@
     left: 0px;
   }
   
-  .btn button{
+  .btn2 button{
     margin: 10px;
     position: relative;
     left: 39%;
     border-radius: 30px;
     outline: none;
     padding: 2px 15px;
+  }
+
+  .dark-mode .btn2 button{
+    background-color: white;
+    color: black;
+  }
+  
+  .light-mode .btn2 button{
+    background-color: rgba(0, 0, 0, 0.488);
+    color: white;
   }
