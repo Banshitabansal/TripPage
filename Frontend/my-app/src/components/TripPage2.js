@@ -4,12 +4,13 @@ import {
   FormControl, Select, Button, Dialog, DialogActions,
   DialogContent, DialogTitle, Stack, createSvgIcon
 } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
+import { ThemeProvider, useTheme } from '@mui/material/styles';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import axios from 'axios';
 import './TripPage2.css';
+import { darkTheme, lightTheme} from '../theme.js';
 
 const GOOGLE_SHEET_ID = '1aDOWPqem6US77ATiVTV1sgx2bq8RWVyYzgnMgzIW3k8';
 const GOOGLE_API_KEY = 'AIzaSyB33lFh3E-yrpDAeCEgFYZAxJsXpcu2-_Y';
@@ -332,6 +333,7 @@ const TripPage2 = () => {
 
   
   return (
+    <ThemeProvider theme={isDarkMode ? darkTheme : lightTheme}>
     <div className={`ModalContainer ${isDarkMode ? 'dark-mode' : 'light-mode'}`}>
       <nav className='Navbar'>
         <p>NESSCO</p>
@@ -344,7 +346,7 @@ const TripPage2 = () => {
       </nav>
 
       <div className='FormContainer'>
-        <div style={{ color: theme.palette.text.primary}}>
+        <div>
           <Autocomplete
             multiple
             size='small'
@@ -370,19 +372,8 @@ const TripPage2 = () => {
               overflow: 'hidden',
               whiteSpace: 'nowrap',
               textOverflow: 'ellipsis',
-              '& fieldset': {
-                borderColor: 'rgb(94, 93, 93)',
-              },
-              '&:hover fieldset': {
-                borderColor: 'rgb(94, 93, 93)',
-              },
-              '&.Mui-focused fieldset': {
-                borderColor: 'rgb(94, 93, 93)',
-              },
-              '& .MuiInputLabel-root': {
-                color: 'rgb(94, 93, 93)',
-              },
             }}
+            style={{ color: theme.palette.text.primary}}
           />
         </div>
 
@@ -390,18 +381,6 @@ const TripPage2 = () => {
           <FormControl
             sx={{
               m: 1, minWidth: 250, position: 'absolute', left: 330, top: 2,
-              '& fieldset': {
-                borderColor: 'rgb(94, 93, 93)',
-              },
-              '&:hover fieldset': {
-                borderColor: 'rgb(94, 93, 93)',
-              },
-              '&.Mui-focused fieldset': {
-                borderColor: 'rgb(94, 93, 93)',
-              },
-              '& .MuiInputLabel-root': {
-                color: 'rgb(94, 93, 93)',
-              },
             }} size="small">
             <InputLabel>Select Type</InputLabel>
             <Select value={selectOption} readOnly label="Select Type">
@@ -418,18 +397,6 @@ const TripPage2 = () => {
           <FormControl
             sx={{
               m: 1, minWidth: 324, position: 'absolute', top: 2, left: 605,
-              '& fieldset': {
-                borderColor: 'rgb(94, 93, 93)',
-              },
-              '&:hover fieldset': {
-                borderColor: 'rgb(94, 93, 93)',
-              },
-              '&.Mui-focused fieldset': {
-                borderColor: 'rgb(94, 93, 93)',
-              },
-              '& .MuiInputLabel-root': {
-                color: 'rgb(94, 93, 93)',
-              },
             }} size="small">
             <InputLabel>Select Dept.</InputLabel>
             <Select value={selectOptions} onChange={handleSelectChange} label="Select Dept.">
@@ -446,18 +413,7 @@ const TripPage2 = () => {
             <Box
               sx={{
                 '& > :not(style)': { m: 1, width: '15ch' }, position: 'absolute', top: 2, left: 800,
-                '& fieldset': {
-                  borderColor: 'rgb(94, 93, 93)',
-                },
-                '&:hover fieldset': {
-                  borderColor: 'rgb(94, 93, 93)',
-                },
-                '&.Mui-focused fieldset': {
-                  borderColor: 'rgb(94, 93, 93)',
-                },
-                '& .MuiInputLabel-root': {
-                  color: 'rgb(94, 93, 93)',
-                },
+            
               }}size="small">
               <TextField onChange={handleChangeSR} value={selectSR} label="SR No." required sx={{ width: 180 }} size='small' />
             </Box>
@@ -468,18 +424,6 @@ const TripPage2 = () => {
           <Box
             sx={{
               '& > :not(style)': { m: 1, width: '17ch' }, position: 'absolute', top: 2, left: 955,
-              '& fieldset': {
-                borderColor: 'rgb(94, 93, 93)',
-              },
-              '&:hover fieldset': {
-                borderColor: 'rgb(94, 93, 93)',
-              },
-              '&.Mui-focused fieldset': {
-                borderColor: 'rgb(94, 93, 93)',
-              },
-              '& .MuiInputLabel-root': {
-                color: 'rgb(94, 93, 93)',
-              },
             }}size="small">
             <TextField onChange={handleChangePlanID} value={planID} label="Plan ID" required sx={{ width: 180 }} size='small' />
           </Box>
@@ -487,19 +431,7 @@ const TripPage2 = () => {
 
         <div>
           <Box
-            sx={{'& > :not(style)': { m: 1, width: '24ch' }, position: 'absolute', top: 2, left: 1125,
-              '& fieldset': {
-                borderColor: 'rgb(94, 93, 93)',
-              },
-              '&:hover fieldset': {
-                borderColor: 'rgb(94, 93, 93)',
-              },
-              '&.Mui-focused fieldset': {
-                borderColor: 'rgb(94, 93, 93)',
-              },
-              '& .MuiInputLabel-root': {
-                color: 'rgb(94, 93, 93)',
-              },
+            sx={{'& > :not(style)': { m: 1, width: '24ch' }, position: 'absolute', top: 2, left: 1125,             
             }} size="small">
             <TextField label="Payment ID" value={paymentId}  onChange={handlePaymentIdChange} required sx={{ width: 220 }} size='small' />
           </Box>
@@ -522,35 +454,14 @@ const TripPage2 = () => {
                   required
                   sx={{
                     m: 1, width: 215, position: 'relative', top: 60,
-                    '& fieldset': {
-                      borderColor: 'white',
-                    },
-                    '&:hover fieldset': {
-                      borderColor: 'white',
-                    },
-                    '&.Mui-focused fieldset': {
-                      borderColor: 'white',
-                    },
-                    '& .MuiInputLabel-root': {
-                      color: 'white',
-                    },
+                    '& .css-p1olib-MuiAutocomplete-endAdornment' :{
+                      top : -43,
+                    }
                   }}
                   renderInput={(params) => <TextField {...params} label="Currency" />}
                 />
                 <FormControl sx={{
                   m: 1, minWidth: 215, position: 'relative', left: 230, bottom: 12,
-                  '& fieldset': {
-                    borderColor: 'white',
-                  },
-                  '&:hover fieldset': {
-                    borderColor: 'white',
-                  },
-                  '&.Mui-focused fieldset': {
-                    borderColor: 'white',
-                  },
-                  '& .MuiInputLabel-root': {
-                    color: 'white',
-                  },
                 }}>
                   <InputLabel>Payment Mode</InputLabel>
                   <Select
@@ -565,33 +476,12 @@ const TripPage2 = () => {
                     <MenuItem value="Cash">Cash</MenuItem>
                   </Select>
                 </FormControl>
-
+                
                 <Box
                   sx={{
-                    backgroundColor: 'rgb(94, 93, 93)',
                     '& > :not(style)': { m: 1, width: '25ch' },
-                    '& fieldset': {
-                      borderColor: 'white',
-                    },
-                    '&:hover fieldset': {
-                      borderColor: 'white',
-                    },
-                    '&.Mui-focused fieldset': {
-                      borderColor: 'white',
-                    },
-                    '& .MuiInputLabel-root': {
-                      color: 'white',
-                    },
                   }}
                 >
-                  <TextField
-                    id="amount"
-                    label="Amount (units)"
-                    variant="outlined"
-                    value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
-                    required
-                  />
                   <TextField
                     id="remarks"
                     label="Remarks"
@@ -600,13 +490,23 @@ const TripPage2 = () => {
                     onChange={(e) => setRemarks(e.target.value)}
                     required
                   />
+                  <TextField
+                    id="amount"
+                    label="Amount (units)"
+                    variant="outlined"
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
+                    required
+                  />
                 </Box>
               </DialogContent>
               <DialogActions>
                 <Button type="submit">Save</Button>
                 <Button onClick={handleClose}>Close</Button>
               </DialogActions>
+            
             </form>
+          
           </Dialog>
 
           <table className="EntriesTable">
@@ -650,6 +550,7 @@ const TripPage2 = () => {
         </div>
       </div>
     </div>
+    </ThemeProvider>
   );
 };
 

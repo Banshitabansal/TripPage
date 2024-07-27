@@ -141,31 +141,13 @@ body {
   font-size: small;
 }
 
-.dark-mode .Secondary td Button{
-  color: white;
-}
-
-.light-mode .Secondary td Button{
-  color: rgb(62, 62, 62);
-}
 
 /* Dialog Styles */
 .Dialog{
   width: 50;
   height: 440px;
-  background-color: rgb(94, 93, 93);
-  color: white;
 }
 
-.light-mode .Dialog {
-  background-color: #e0e0e0; 
-  color: black;
-}
-
-.dark-mode .Dialog  {
-  background-color: #333333; 
-  color: white;
-}
 
 .Title {
   position: relative;
@@ -174,7 +156,7 @@ body {
 }
 
 .Dialog button{
-  color: white;
+  /* color: white; */
   font-weight: 600;
   position: relative;
   top: 70px;
@@ -198,15 +180,6 @@ body {
   color: black;
 }
 
-/* .ModalContainer.dark-mode  {
-  background-color: #333333;
-  color: white;
-}
-
-.ModalContainer.light-mode  {
-  background-color: #e0e0e0;
-  color: black;
-} */
 
 .EntriesTable {
   width: 42%;

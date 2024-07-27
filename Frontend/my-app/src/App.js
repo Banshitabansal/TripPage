@@ -4,7 +4,6 @@ import Xyz from './components/xyz';
 import TripPage from './components/TripPage';
 import TripPage2 from './components/TripPage2';
 
-
 function App() {
   return (
     <>
