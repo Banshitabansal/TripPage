@@ -8,10 +8,6 @@ import {
   FormControl,
   Select,
   Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   Grid,
   IconButton,
 } from "@mui/material";
@@ -24,17 +20,13 @@ import axios from "axios";
 import "./TripPage.css";
 import { darkTheme, lightTheme } from "../theme.js";
 import Navbar from "./Navbar.js";
-
+import Table from "./Table.js";
 
 const GOOGLE_SHEET_ID = "1aDOWPqem6US77ATiVTV1sgx2bq8RWVyYzgnMgzIW3k8";
 const GOOGLE_API_KEY = "AIzaSyB33lFh3E-yrpDAeCEgFYZAxJsXpcu2-_Y";
 const RANGE = "EmployeeData!A2:B";
 
-const config = {
-  cUrl: "https://api.countrystatecity.in/v1",
-  cKey: "NHhvOEcyWk50N2Vna3VFTE00bFp3MjFKR0ZEOUhkZlg4RTk1MlJlaA==",
-  currencyUrl: "https://open.er-api.com/v6/latest",
-};
+
 
 const TripPage = () => {
   const theme = useTheme();
@@ -90,38 +82,6 @@ const TripPage = () => {
     }
   }, [selectedOptions]);
 
-  //fetch currency from currency api
-  const fetchCurrencyOptions = async () => {
-    try {
-      const url = `${config.currencyUrl}`;
-      console.log("Request URL:", url);
-
-      const response = await axios.get(url);
-
-      const data = response.data;
-      console.log("Data received:", data);
-
-      const formattedCurrencyOptions = Object.keys(data.rates).map((code) => ({
-        value: code,
-        label: `${code}`,
-      }));
-
-      setCurrencyOptions(formattedCurrencyOptions);
-    } catch (error) {
-      console.error("Error fetching currency data:", error);
-
-      if (error.response) {
-        console.error("Error response data:", error.response.data);
-        console.error("Error response status:", error.response.status);
-        console.error("Error response headers:", error.response.headers);
-      } else if (error.request) {
-        console.error("Error request:", error.request);
-      } else {
-        console.error("Error message:", error.message);
-      }
-    }
-  };
-
   const handleChange = (event, newValue) => {
     setSelectedOptions(newValue);
   };
@@ -140,48 +100,14 @@ const TripPage = () => {
 
   const handleClickOpen = () => {
     setOpen(true);
-    fetchCurrencyOptions();
   };
 
-  const handleChangeMode = (event) => {
-    setMode(event.target.value);
-  };
-  
-  
-  const handleCurrencyChange = (event, newValue) => {
-    setCurrency(newValue);
+  const handleClickClose = () => {
+    setOpen(false);
   };
 
   const handlePaymentIdChange = async (event) => {
     setPaymentId(event.target.value);
-  };
-
-  //close button
-  const handleClose = (event, reason) => {
-    if (reason === "backdropClick") {
-      return;
-    }
-    setOpen(false);
-    setMode("");
-    setAmount("");
-    setRemarks("");
-    setEditIndex(-1);
-    setCurrency("");
-  };
-
-  //save button
-  const handleFormSubmit = (event) => {
-    event.preventDefault();
-    const newEntry = { currency, mode, amount, remarks };
-
-    if (editIndex >= 0) {
-      const updatedEntries = [...entries];
-      updatedEntries[editIndex] = newEntry;
-      setEntries(updatedEntries);
-    } else {
-      setEntries([...entries, newEntry]);
-    }
-    handleClose();
   };
 
   //edit button
@@ -298,7 +224,11 @@ const TripPage = () => {
     <ThemeProvider theme={isDarkMode ? darkTheme : lightTheme}>
       <div
         className={`ModalContainer ${isDarkMode ? "dark-mode" : "light-mode"}`}>
-          <Navbar isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />
+        <Navbar isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />
+
+        
+
+        <Table />
 
         <div className="FormContainer">
           <Grid container spacing={2}>
@@ -395,130 +325,6 @@ const TripPage = () => {
               </Box>
             </Grid>
           </Grid>
-        </div>
-
-        <div className="Secondary">
-          <h1>Trip Payment Request</h1>
-          <div className="TableContainer">
-            <Box>
-              <Dialog open={open} onClose={handleClose}>
-                <form onSubmit={handleFormSubmit} className="Dialog">
-                  <DialogTitle className="Title">
-                    ADD PAYMENT REQUEST ENTRY
-                  </DialogTitle>
-                  <DialogContent>
-                    <Grid container spacing={2}>
-                      <Grid item xs={6}>
-                        <Autocomplete
-                          disablePortal
-                          options={currencyOptions}
-                          value={currency}
-                          onChange={handleCurrencyChange}
-                          required
-                          renderInput={(params) => (
-                            <TextField {...params} label="Currency" />
-                          )}
-                          sx={{ mt: 1 }}
-                        />
-                      </Grid>
-                      <Grid item xs={6}>
-                        <FormControl fullWidth sx={{ mt: 1 }}>
-                          <InputLabel>Payment Mode</InputLabel>
-                          <Select
-                            value={mode}
-                            label="Payment Mode"
-                            onChange={handleChangeMode}>
-                            <MenuItem value="">
-                              <em>None</em>
-                            </MenuItem>
-                            <MenuItem value="Bank">Bank</MenuItem>
-                            <MenuItem value="Cash">Cash</MenuItem>
-                          </Select>
-                        </FormControl>
-                      </Grid>
-                      <Grid item xs={6}>
-                        <TextField
-                          id="amount"
-                          label="Amount (units)"
-                          variant="outlined"
-                          value={amount}
-                          onChange={(e) => setAmount(e.target.value)}
-                          required
-                          fullWidth
-                        />
-                      </Grid>
-                      <Grid item xs={6}>
-                        <TextField
-                          id="remarks"
-                          label="Remarks"
-                          variant="outlined"
-                          value={remarks}
-                          onChange={(e) => setRemarks(e.target.value)}
-                          required
-                          fullWidth
-                        />
-                      </Grid>
-                    </Grid>
-                  </DialogContent>
-                  <DialogActions>
-                    <Button type="submit">Save</Button>
-                    <Button onClick={handleClose}>Close</Button>
-                  </DialogActions>
-                </form>
-              </Dialog>
-            </Box>
-
-            <Box>
-              <table className="EntriesTable">
-                <thead>
-                  <tr>
-                    <th>
-                      <IconButton>
-                        <AddIcon
-                          onClick={handleClickOpen}
-                          sx={{
-                            width: 55,
-                          }}
-                        />
-                      </IconButton>
-                    </th>
-                    <th>Sr.</th>
-                    <th>Currency</th>
-                    <th>Payment Mode</th>
-                    <th>Amount</th>
-                    <th>Remarks</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {entries.map((entry, index) => (
-                    <tr key={index}>
-                      <td>
-                        <IconButton onClick={() => handleEdit(index)}>
-                          <EditIcon fontSize="small" />
-                        </IconButton>
-                        <IconButton onClick={() => handleDelete(index)}>
-                          <DeleteIcon fontSize="small" />
-                        </IconButton>
-                      </td>
-                      <td>{entry.serialNo || index + 1}</td>
-                      <td>{entry.currency?.label}</td>
-                      <td>{entry.mode}</td>
-                      <td>{entry.amount}</td>
-                      <td>{entry.remarks}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </Box>
-          </div>
-          <div className="btn">
-            <Button type="submit" onClick={submitToGoogleSheets}>
-              SUBMIT
-            </Button>
-            <Button type="clear" onClick={handleClear}>
-              CLEAR
-            </Button>
-          </div>
         </div>
       </div>
     </ThemeProvider>
