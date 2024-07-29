@@ -4,6 +4,7 @@ import {
   FormControl, Select, Button, Dialog, DialogActions,
   DialogContent, DialogTitle, Stack, createSvgIcon
 } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
 import { ThemeProvider, useTheme } from '@mui/material/styles';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -156,15 +157,6 @@ const TripPage2 = () => {
   const handlePaymentIdChange = async (event) => {
     setPaymentId(event.target.value);
   };
-
-
-  //plus icon for dialog box
-  const PlusIcon = createSvgIcon(
-    <svg stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-    </svg>,
-    'Plus'
-  );
 
 
   //close button
@@ -514,9 +506,7 @@ const TripPage2 = () => {
               <tr>
                 <th>
                   <Button onClick={handleClickOpen}>
-                    <Stack direction="row" spacing={3}>
-                      <PlusIcon />
-                    </Stack>
+                    <AddIcon />
                   </Button>
                 </th>
                 <th>Sr.</th>

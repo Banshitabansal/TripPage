@@ -10,8 +10,6 @@ body {
     linear-gradient(to right, rgba(0, 0, 0, 0.2) 1px, transparent .01px),
     linear-gradient(to bottom, rgba(0, 0, 0, 0.2) 1px, transparent .01px);
   position: fixed; 
-  top: 0; 
-  left: 0; 
   width: 100%; 
   height: 100%; 
   z-index: 0;
@@ -33,7 +31,7 @@ body {
   background-image: 
     linear-gradient(to right, rgba(255, 255, 255, 0.2) 1px, transparent .01px),
     linear-gradient(to bottom, rgba(255, 255, 255, 0.2) 1px, transparent .01px);
-  background-size: 40px 40px; /* Set the background size for larger screens */
+  background-size: 40px 40px; 
   color: white;
 }
 
@@ -95,17 +93,18 @@ body {
   margin-top: 90px;
   width: 100%;
   height: 75px;
+  padding: 15px;
   backdrop-filter: blur(3px);
 }
 
 .light-mode .FormContainer {
   background-color: rgba(255, 255, 255, 0);
-  color: black;
+  /* color: black; */
 }
 
 .dark-mode .FormContainer {
   background-color: rgba(0, 0, 0, 0);
-  color: white;
+  /* color: white; */
 }
 
 /* Secondary Styles */
@@ -120,9 +119,12 @@ body {
 }
 
 .Secondary th Button {
-  margin-top: 100px;
+  margin-top: 90px;
   border: none;
-  border-radius: 50%;
+  border-radius: 30px;
+  padding: 3px;
+  position: relative;
+  bottom: 46px;
 }
 
 .dark-mode .Secondary th Button{
@@ -135,38 +137,12 @@ body {
   color: white;
 }
 
-.Secondary td button{
-  position: relative;
-  top: 0px;
-  font-size: small;
-}
-
-
-/* Dialog Styles */
-.Dialog{
-  width: 50;
-  height: 440px;
-}
-
-
-.Title {
-  position: relative;
-  top: 30px;
-  left: 0px;
-}
-
-.Dialog button{
-  /* color: white; */
-  font-weight: 600;
-  position: relative;
-  top: 70px;
-}
 
 /* Table Styles */
 .TableContainer{
   position: relative;
-  top: 165px;
-  height: 500px;
+  top: 163px;
+  height: 600px;
   z-index: 0;
 }
 
@@ -182,9 +158,8 @@ body {
 
 
 .EntriesTable {
-  width: 42%;
+  width: 50%; 
   border-collapse: collapse;
-  margin-top: 20px;
   position: relative;
   left: 29%;
 }
@@ -204,8 +179,8 @@ body {
   border-bottom: 2px solid rgba(21, 21, 21, 0.2);
 }
 
-.EntriesTable td{
-  padding: 2px 8px;
+.EntriesTable td{ 
+  padding: 0px  8px;
 }
 
 .light-mode .EntriesTable td{
@@ -218,21 +193,12 @@ body {
   border-bottom: 2px solid rgba(255, 255, 255, 0.2);
 }
 
-.EntriesTable th button {
-  position: relative;
-  bottom: 46px;
-  left: 10px;
-}
-
-.EntriesTable td button {
-  position: relative;
-  left: 0px;
-}
 
 .btn button{
   margin: 10px;
-  position: relative;
+  /* position: relative; */
   left: 42%;
+  bottom: 40px;
   border-radius: 30px;
   outline: none;
   padding: 2px 15px;
@@ -246,4 +212,105 @@ body {
 .light-mode .btn button{
   background-color: rgba(0, 0, 0, 0.488);
   color: white;
+}
+
+/* Media Queries for Responsive Design */
+@media (max-width: 1200px) {
+  .Navbar a {
+    left: 35%;
+  }
+  .Secondary h1 {
+    left: 36%;
+  }
+  .EntriesTable {
+    width: 50%;
+    left: 25%;
+  }
+  .btn button {
+    left: 41%;
+  }
+}
+
+
+@media (max-width: 884px) {
+  .Navbar a {
+    left: 30%;
+    font-size: 16px;
+  }
+  .FormContainer{
+    height: 200px;
+  }
+  .TableContainer{
+    height: 1050px;
+    top: 220px;
+  }
+  .Secondary h1 {
+    left: 33%;
+    font-size: 28px;
+    margin-top: 70px;
+  }
+  .EntriesTable {
+    width: 70%;
+    left: 15%;
+  }
+  .btn button {
+    left: 38%;
+    bottom: 120px;
+  }
+}
+
+@media (max-width: 768px) {
+  .Navbar a {
+    left: 30%;
+    font-size: 14px;
+  }
+  .TableContainer{
+    height: 800px;
+  }
+  .Secondary h1 {
+    left: 33%;
+    font-size: 28px;
+  }
+  .EntriesTable {
+    width: 80%;
+    left: 10%;
+  }
+  .btn button {
+    left: 40%;
+  }
+}
+
+@media (max-width: 430px) {
+  .Navbar a {
+    font-size: 13px;
+    left: 28%;
+    margin: 10px;
+  }
+  .FormContainer{
+    height: 200px;
+  }
+  .TableContainer{
+    height: 700px;
+    top: 270px;
+  }
+  .Secondary h1 {
+    left: 21%;
+    font-size: 22px;
+    margin-top: 115px;
+  }
+  .EntriesTable{
+    top: -50px;
+  }
+  .EntriesTable th {
+    font-size: 7px;
+    left: -5px;
+  }
+  .EntriesTable td{ 
+    padding: 0px 4px;
+    font-size: 8px;
+  }
+  .btn button {
+    left: 26%;
+    top: 0px;
+  }
 }

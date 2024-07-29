@@ -1,11 +1,11 @@
 /* General Styles */
-* {
+/* * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-  }
+  } */
   
-  body {
+  /* body {
     background-image: 
       linear-gradient(to right, rgba(0, 0, 0, 0.2) 1px, transparent .01px),
       linear-gradient(to bottom, rgba(0, 0, 0, 0.2) 1px, transparent .01px);
@@ -15,10 +15,10 @@
     width: 100%; 
     height: 100%; 
     z-index: 0;
-  }
+  }  */
   
 
-  .Navbar {
+  /* .Navbar {
     float: left;
     display: block;
     width: 100%;
@@ -26,9 +26,9 @@
     position: sticky;
     z-index: 1;
   }
+   */
   
-  
-  .Navbar a {
+  /* .Navbar a {
     text-decoration: none;
     margin: 20px;
     position: relative;
@@ -45,25 +45,11 @@
     left: 8px;
     font-size: 22px;
     font-weight: 750;
-  }
-  
-  
-  .FormContainer {
-    position: fixed;
-    margin-top: 90px;
-    width: 100%;
-    height: 75px;
-    backdrop-filter: blur(3px);
-  }
-  
-  
-  .dark-mode .FormContainer {
-    background-color: rgba(0, 0, 0, 0);
-    color: white;
   } */
+
   
   /* Secondary Styles */
-  .Secondary h1 {
+  /* .Secondary h1 {
     font-size: 32px;
     margin-bottom: 0px;
     text-align: center;
@@ -71,9 +57,9 @@
     top: 170px;
     left: 38%;
     z-index: 1;
-  }
+  } */
   
-  .Secondary th Button {
+  /* .Secondary th Button {
     margin-top: 100px;
     border: none;
     border-radius: 50%;
@@ -85,10 +71,10 @@
     top: 0px;
     font-size: small;
   }
-  
+   */
   
   /* Dialog Styles */
-  .Dialog{
+  /* .Dialog{
     width: 50;
     height: 440px;
   }
@@ -99,16 +85,15 @@
     top: 30px;
     left: 0px;
   }
-  
-  .Dialog button{
-    /* color: white; */
+   */
+  /* .Dialog button{
     font-weight: 600;
     position: relative;
     top: 70px;
-  }
+  } */
   
   /* Table Styles */
-  .TableContainer{
+  /* .TableContainer{
     position: relative;
     top: 165px;
     height: 500px;
@@ -122,9 +107,9 @@
     margin-top: 20px;
     position: relative;
     left: 29%;
-  }
+  } */
   
-  .EntriesTable th{
+  /* .EntriesTable th{
     padding: 8px;
     text-align: left;
     position: relative;
@@ -134,10 +119,10 @@
   
   .EntriesTable td{
     padding: 2px 8px;
-  }
+  } */
   
   
-  .EntriesTable th button {
+  /* .EntriesTable th button {
     position: relative;
     bottom: 46px;
     left: 10px;
@@ -146,12 +131,13 @@
   .EntriesTable td button {
     position: relative;
     left: 0px;
-  }
+  } */
   
   .btn2 button{
     margin: 10px;
     position: relative;
     left: 39%;
+    bottom: 40px;
     border-radius: 30px;
     outline: none;
     padding: 2px 15px;
