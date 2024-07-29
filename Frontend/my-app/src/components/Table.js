@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import axios from "axios";
 import { Box, IconButton, Button } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
@@ -6,6 +7,21 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import DialogBox from "./DialogBox.js";
 
 const Table = () => {
+  const [entries, setEntries] = useState([]);
+  const [currency, setCurrency] = useState("");
+  const [mode, setMode] = useState("");
+  const [amount, setAmount] = useState("");
+  const [remarks, setRemarks] = useState("");
+  const [editIndex, setEditIndex] = useState(-1);
+  const [open, setOpen] = useState(false);
+  const [selectedOptions, setSelectedOptions] = useState([]);
+  const [groupValue, setGroupValue] = useState("");
+  const [selectOption, setSelectOption] = useState("");
+  const [selectOptions, setSelectOptions] = useState("");
+  const [selectSR, setSelectSR] = useState("");
+  const [paymentId, setPaymentId] = useState("");
+  const [selectPlanID, setSelectPlanID] = useState("");
+
   //edit button
   const handleEdit = (index) => {
     const entry = entries[index];
@@ -37,6 +53,74 @@ const Table = () => {
     setEditIndex(-1);
     setPaymentId("");
     setSelectPlanID("");
+  };
+
+  const handleClickClose = () => {
+    setOpen(false);
+  };
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const submitToGoogleSheets = async () => {
+    try {
+      // Fetch the last paymentId and planID from the backend
+      const response = await axios.get("http://localhost:3001/api/getLastIds");
+      const { lastPaymentId, lastPlanID } = response.data;
+
+      // Increment the last paymentId and planID by 1
+      const newPaymentId = lastPaymentId + 1;
+      const newPlanID = lastPlanID + 1;
+
+      const formData = {
+        selectOption,
+        selectOptions,
+        selectSR,
+        paymentId: `PAY-${String(newPaymentId).padStart(5, "0")}`,
+      };
+
+      const employeeIds = groupValue
+        .split(", ")
+        .map((entry) => entry.split(" - ")[0]);
+      const employeeNames = groupValue
+        .split(", ")
+        .map((entry) => entry.split(" - ")[1]);
+
+      const combinedData = entries.map((entry, index) => {
+        const { currency, mode, amount, remarks, serialNo } = entry;
+        return {
+          ...formData,
+          planID: `PLN-${String(newPlanID + index).padStart(3, "0")}`,
+          employeeId: employeeIds.join(", "),
+          employeeName: employeeNames.join(", "),
+          currency: currency?.value || currency,
+          mode,
+          amount,
+          remarks,
+          serialNo: serialNo || index + 1,
+        };
+      });
+
+      // Update state with the new values
+      setPaymentId(newPaymentId);
+      setSelectPlanID(newPlanID + entries.length);
+
+      // Submit the combined data to Google Sheets
+      try {
+        const submitResponse = await axios.post(
+          "http://localhost:3001/api/submit",
+          {
+            data: combinedData,
+          }
+        );
+        console.log("Data submitted successfully:", submitResponse.data);
+      } catch (error) {
+        console.error("Error submitting data:", error);
+      }
+    } catch (error) {
+      console.error("Error fetching last IDs:", error);
+    }
   };
 
   return (

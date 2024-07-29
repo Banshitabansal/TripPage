@@ -110,38 +110,38 @@ const TripPage = () => {
     setPaymentId(event.target.value);
   };
 
-  //edit button
-  const handleEdit = (index) => {
-    const entry = entries[index];
-    setCurrency(entry.currency);
-    setMode(entry.mode);
-    setAmount(entry.amount);
-    setRemarks(entry.remarks);
-    setEditIndex(index);
-    setOpen(true);
-  };
+  // //edit button
+  // const handleEdit = (index) => {
+  //   const entry = entries[index];
+  //   setCurrency(entry.currency);
+  //   setMode(entry.mode);
+  //   setAmount(entry.amount);
+  //   setRemarks(entry.remarks);
+  //   setEditIndex(index);
+  //   setOpen(true);
+  // };
 
-  //delete button
-  const handleDelete = (index) => {
-    setEntries(entries.filter((_, i) => i !== index));
-  };
+  // //delete button
+  // const handleDelete = (index) => {
+  //   setEntries(entries.filter((_, i) => i !== index));
+  // };
 
-  //clear button
-  const handleClear = () => {
-    setSelectedOptions([]);
-    setGroupValue("");
-    setSelectOption("");
-    setSelectOptions("");
-    setSelectSR("");
-    setMode("");
-    setAmount("");
-    setRemarks("");
-    setEntries([]);
-    setCurrency("");
-    setEditIndex(-1);
-    setPaymentId("");
-    setSelectPlanID("");
-  };
+  // //clear button
+  // const handleClear = () => {
+  //   setSelectedOptions([]);
+  //   setGroupValue("");
+  //   setSelectOption("");
+  //   setSelectOptions("");
+  //   setSelectSR("");
+  //   setMode("");
+  //   setAmount("");
+  //   setRemarks("");
+  //   setEntries([]);
+  //   setCurrency("");
+  //   setEditIndex(-1);
+  //   setPaymentId("");
+  //   setSelectPlanID("");
+  // };
 
   //submit button
   const submitToGoogleSheets = async () => {
