@@ -1,11 +1,11 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const entrySchema = new mongoose.Schema({
   paymentId: String,
   planID: String,
   serialNo: String,
-  employeeId: String, 
-  employeeName: String, 
+  employeeId: String,
+  employeeName: String,
   selectOption: String,
   selectOptions: String,
   selectSR: String,
@@ -16,6 +16,6 @@ const entrySchema = new mongoose.Schema({
   status: String,
 });
 
-const Entry = mongoose.model('Entry', entrySchema);
+const Entry = mongoose.model("Entry", entrySchema);
 
 export default Entry;

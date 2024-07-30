@@ -6,7 +6,13 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import DialogBox from "./DialogBox.js";
 
-const Table = () => {
+const Table = ({
+  clear,
+  groupValue,
+  selectOptions,
+  selectOption,
+  selectSR,
+}) => {
   const [entries, setEntries] = useState([]);
   const [currency, setCurrency] = useState("");
   const [mode, setMode] = useState("");
@@ -14,13 +20,18 @@ const Table = () => {
   const [remarks, setRemarks] = useState("");
   const [editIndex, setEditIndex] = useState(-1);
   const [open, setOpen] = useState(false);
-  const [selectedOptions, setSelectedOptions] = useState([]);
-  const [groupValue, setGroupValue] = useState("");
-  const [selectOption, setSelectOption] = useState("");
-  const [selectOptions, setSelectOptions] = useState("");
-  const [selectSR, setSelectSR] = useState("");
   const [paymentId, setPaymentId] = useState("");
-  const [selectPlanID, setSelectPlanID] = useState("");
+  const [planID, setPlanID] = useState("");
+
+  //dialog close
+  const handleClickClose = () => {
+    setOpen(false);
+  };
+
+  //dialog open
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
 
   //edit button
   const handleEdit = (index) => {
@@ -40,38 +51,25 @@ const Table = () => {
 
   //clear button
   const handleClear = () => {
-    setSelectedOptions([]);
-    setGroupValue("");
-    setSelectOption("");
-    setSelectOptions("");
-    setSelectSR("");
     setMode("");
     setAmount("");
     setRemarks("");
     setEntries([]);
     setCurrency("");
     setEditIndex(-1);
-    setPaymentId("");
-    setSelectPlanID("");
+    clear();
   };
 
-  const handleClickClose = () => {
-    setOpen(false);
-  };
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
+  //submit button
   const submitToGoogleSheets = async () => {
     try {
-      // Fetch the last paymentId and planID from the backend
+      // Fetch the last paymentId and planId from the backend
       const response = await axios.get("http://localhost:3001/api/getLastIds");
       const { lastPaymentId, lastPlanID } = response.data;
 
-      // Increment the last paymentId and planID by 1
+      // Increment the last paymentId and planId by 1
       const newPaymentId = lastPaymentId + 1;
-      const newPlanID = lastPlanID + 1;
+      const newPlanId = lastPlanID + 1;
 
       const formData = {
         selectOption,
@@ -91,7 +89,7 @@ const Table = () => {
         const { currency, mode, amount, remarks, serialNo } = entry;
         return {
           ...formData,
-          planID: `PLN-${String(newPlanID + index).padStart(3, "0")}`,
+          planID: `PLN-${String(newPlanId + index).padStart(3, "0")}`,
           employeeId: employeeIds.join(", "),
           employeeName: employeeNames.join(", "),
           currency: currency?.value || currency,
@@ -104,7 +102,7 @@ const Table = () => {
 
       // Update state with the new values
       setPaymentId(newPaymentId);
-      setSelectPlanID(newPlanID + entries.length);
+      setPlanID(newPlanId + entries.length);
 
       // Submit the combined data to Google Sheets
       try {
@@ -142,11 +140,34 @@ const Table = () => {
         setEditIndex={setEditIndex}
       />
 
-      <div className="Secondary">
-        <h1>Trip Payment Request</h1>
-        <div className="TableContainer">
-          <Box>
-            <table className="EntriesTable">
+      <Box className="TableBackground">
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+          }}>
+          <h1>Trip Payment Request</h1>
+          <Box
+            sx={{
+              width: {
+                xs: "90%", // Set width to 90% for extra-small screens
+                sm: "80%", // Set width to 80% for small screens
+                md: "70%", // Set width to 70% for medium screens
+                lg: "45%", // Set width to 45% for large screens
+                xl: "50%", // Set width to 50% for extra-large screens
+              },
+              overflow: 'auto',
+              mt: 10,
+              height: 300,
+              coverflowY: 'scroll',
+              '&::-webkit-scrollbar': {
+                width: '12px',
+                height: '12px',
+              },
+            }}>
+            <table cellSpacing={0}>
               <thead>
                 <tr>
                   <th>
@@ -187,16 +208,16 @@ const Table = () => {
               </tbody>
             </table>
           </Box>
-        </div>
-        <div className="btn">
-          <Button type="submit" onClick={submitToGoogleSheets}>
-            SUBMIT
-          </Button>
-          <Button type="clear" onClick={handleClear}>
-            CLEAR
-          </Button>
-        </div>
-      </div>
+          <div className="btn" >
+            <Button type="submit" onClick={submitToGoogleSheets}>
+              SUBMIT
+            </Button>
+            <Button type="clear" onClick={handleClear}>
+              CLEAR
+            </Button>
+          </div>
+        </Box>
+      </Box>
     </>
   );
 };
