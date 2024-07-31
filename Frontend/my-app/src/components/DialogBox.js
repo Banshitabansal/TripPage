@@ -26,6 +26,7 @@ const config = {
 const DialogBox = ({
   open,
   close,
+  serialNo,
   currency,
   setCurrency,
   mode,
@@ -95,7 +96,7 @@ const DialogBox = ({
   // save button
   const handleFormSubmit = (event) => {
     event.preventDefault();
-    const newEntry = { currency, mode, amount, remarks };
+    const newEntry = { currency, mode, amount, remarks, serialNo };
 
     if (editIndex >= 0) {
       const updatedEntries = [...entries];

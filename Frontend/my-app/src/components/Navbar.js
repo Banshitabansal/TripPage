@@ -13,6 +13,7 @@ const Navbar = ({isDarkMode, setIsDarkMode}) => {
       <nav className="Navbar">
         <p>NESSCO</p>
         <a href="#">Trip Plan</a>
+        <a href="http://localhost:3000/TripPage2">Trip Update</a>
         <a href="#">Trip Search</a>
         <a href="#">Sign In</a>
         <Button

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useLocation } from "react-router-dom";
 import axios from "axios";
 import { Box, IconButton, Button } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
@@ -12,7 +13,16 @@ const Table = ({
   selectOptions,
   selectOption,
   selectSR,
+  setSelectOption,
+  setSelectOptions,
+  setSelectedOptions,
+  setSelectSR,
+  setPaymentId,
+  paymentId,
+  planID,
+  setPlanID
 }) => {
+  const location = useLocation();
   const [entries, setEntries] = useState([]);
   const [currency, setCurrency] = useState("");
   const [mode, setMode] = useState("");
@@ -20,8 +30,8 @@ const Table = ({
   const [remarks, setRemarks] = useState("");
   const [editIndex, setEditIndex] = useState(-1);
   const [open, setOpen] = useState(false);
-  const [paymentId, setPaymentId] = useState("");
-  const [planID, setPlanID] = useState("");
+  const [deletedEntries, setDeletedEntries] = useState([]);
+  const [serialNo, setSerialNo] = useState("");
 
   //dialog close
   const handleClickClose = () => {
@@ -41,12 +51,16 @@ const Table = ({
     setAmount(entry.amount);
     setRemarks(entry.remarks);
     setEditIndex(index);
+    setSerialNo(entry.serialNo);
     setOpen(true);
   };
 
   //delete button
   const handleDelete = (index) => {
+    const entryToDelete = entries[index];
+    setDeletedEntries([...deletedEntries, entryToDelete.serialNo]);
     setEntries(entries.filter((_, i) => i !== index));
+    console.log("delete", deletedEntries);
   };
 
   //clear button
@@ -121,11 +135,116 @@ const Table = ({
     }
   };
 
+  //fetch data from googlesheet
+  const fetchPaymentData = async () => {
+    try {
+      console.log(`Fetching payment data for paymentId: ${paymentId}`);
+      const response = await axios.get(
+        `http://localhost:3001/api/fetch?paymentId=${paymentId}`
+      );
+      console.log("Response received:", response.data);
+
+      if (response.data.success) {
+        const paymentData = response.data.data;
+
+        const formattedEntries = paymentData.map((data, index) => ({
+          currency: { label: data[8] },
+          mode: data[9],
+          amount: data[10],
+          remarks: data[11],
+          serialNo: data[2],
+        }));
+        setEntries(formattedEntries);
+
+        if (paymentData.length > 0) {
+          const [firstData] = paymentData;
+          const employeeIds = firstData[3]?.split(",") || [];
+          const employeeNames = firstData[4]?.split(",") || [];
+
+          const employeeData = employeeIds.map((id, index) => ({
+            id: id.trim(),
+            name: employeeNames[index]?.trim(),
+          }));
+
+          const selectedOptions = employeeData.map((emp) => ({
+            value: emp.id,
+            label: `${emp.id} - ${emp.name}`,
+          }));
+
+          const formattedData = employeeIds
+            .map((id, index) => `${id}-${employeeNames[index]}`)
+            .join(" , ");
+
+          setSelectedOptions(selectedOptions);
+          setSelectOption(firstData[5]);
+          setSelectOptions(firstData[6]);
+          setSelectSR(firstData[7]);
+          setPlanID(firstData[1]);
+        }
+      } else {
+        console.error("Payment ID not found or no data returned");
+      }
+    } catch (error) {
+      console.error("Error fetching payment data:", error);
+    }
+  };
+
+  //update data in googlesheet
+  const handleUpdateData = async (entries) => {
+    try {
+      console.log("Received parameters:", { entries });
+
+      const employeeIds = groupValue
+        .split(", ")
+        .map((entry) => entry.split(" - ")[0]);
+      const employeeNames = groupValue
+        .split(", ")
+        .map((entry) => entry.split(" - ")[1]);
+
+      for (const entry of entries) {
+        const url = `http://localhost:3001/api/updateGoogleSheet?paymentId=${paymentId}&serialNo=${serialNo}`;
+        const entryData = {
+          paymentId: paymentId,
+          planID: planID,
+          serialNo: entry.serialNo,
+          employeeIds: employeeIds.join(", "),
+          employeeNames: employeeNames.join(", "),
+          selectOption: selectOption,
+          selectOptions: selectOptions,
+          selectSR: selectSR,
+          currency: entry.currency,
+          mode: entry.mode,
+          amount: entry.amount,
+          remarks: entry.remarks,
+          deletedEntries,
+        };
+
+        console.log("Data sent for update:", entryData);
+        const response = await axios.put(url, entryData);
+        console.log("Data update request sent:", response);
+        console.log("Data updated successfully:", response.data);
+      }
+      const Data = {
+        paymentId,
+        deletedEntries,
+      };
+
+      const response = await axios.post(
+        "http://localhost:3001/api/deleteGoogleSheet",
+        Data
+      );
+      setDeletedEntries([]);
+    } catch (error) {
+      console.error("Error updating data:", error);
+    }
+  };
+
   return (
     <>
       <DialogBox
         open={open}
         close={handleClickClose}
+        serialNo={serialNo}
         currency={currency}
         setCurrency={setCurrency}
         mode={mode}
@@ -158,13 +277,13 @@ const Table = ({
                 lg: "45%", // Set width to 45% for large screens
                 xl: "50%", // Set width to 50% for extra-large screens
               },
-              overflow: 'auto',
+              overflow: "auto",
               mt: 10,
               height: 300,
-              coverflowY: 'scroll',
-              '&::-webkit-scrollbar': {
-                width: '12px',
-                height: '12px',
+              coverflowY: "scroll",
+              "&::-webkit-scrollbar": {
+                width: "12px",
+                height: "12px",
               },
             }}>
             <table cellSpacing={0}>
@@ -198,7 +317,7 @@ const Table = ({
                         <DeleteIcon fontSize="small" />
                       </IconButton>
                     </td>
-                    <td>{entry.serialNo || index + 1}</td>
+                    <td>{entry.serialNo}</td>
                     <td>{entry.currency?.label}</td>
                     <td>{entry.mode}</td>
                     <td>{entry.amount}</td>
@@ -208,13 +327,37 @@ const Table = ({
               </tbody>
             </table>
           </Box>
-          <div className="btn" >
+          {/* <div className="btn">
             <Button type="submit" onClick={submitToGoogleSheets}>
               SUBMIT
             </Button>
             <Button type="clear" onClick={handleClear}>
               CLEAR
             </Button>
+          </div> */}
+          <div className="btn">
+            {location.pathname === "/TripPage" ? (
+              <div>
+                <Button type="submit" onClick={submitToGoogleSheets}>
+                  SUBMIT
+                </Button>
+                <Button type="clear" onClick={handleClear}>
+                  CLEAR
+                </Button>
+              </div>
+            ) : location.pathname === "/TripPage2" ? (
+              <div>
+                <Button onClick={() => handleUpdateData(entries)}>
+                  Update
+                </Button>
+                <Button type="clear" onClick={handleClear}>
+                  CLEAR
+                </Button>
+                <Button type="fetch" onClick={fetchPaymentData}>
+                  Fetch
+                </Button>
+              </div>
+            ) : null}
           </div>
         </Box>
       </Box>

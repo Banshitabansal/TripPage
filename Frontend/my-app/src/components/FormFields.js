@@ -222,6 +222,12 @@ const FormFields = () => {
         paymentId={paymentId}
         groupValue={groupValue}
         planID={planID}
+        setSelectedOptions={setSelectedOptions}
+        setSelectOptions={setSelectOptions}
+        setSelectOption={setSelectOption}
+        setSelectSR={setSelectSR}
+        setPaymentId={setPaymentId}
+        setPlanID={setPlanID}
       />
     </>
   );
