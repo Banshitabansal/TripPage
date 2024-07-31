@@ -110,7 +110,7 @@ const DialogBox = ({
 
   return (
     <>
-      <Box>
+      <Box sx={{}}>
         <Dialog open={open} onClose={handleClose}>
           <form onSubmit={handleFormSubmit} className="Dialog">
             <DialogTitle className="Title">
@@ -138,9 +138,6 @@ const DialogBox = ({
                       value={mode}
                       label="Payment Mode"
                       onChange={handleChangeMode}>
-                      <MenuItem value="">
-                        <em>None</em>
-                      </MenuItem>
                       <MenuItem value="Bank">Bank</MenuItem>
                       <MenuItem value="Cash">Cash</MenuItem>
                     </Select>

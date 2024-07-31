@@ -20,7 +20,7 @@ const Table = ({
   setPaymentId,
   paymentId,
   planID,
-  setPlanID
+  setPlanID,
 }) => {
   const location = useLocation();
   const [entries, setEntries] = useState([]);
@@ -127,6 +127,13 @@ const Table = ({
           }
         );
         console.log("Data submitted successfully:", submitResponse.data);
+        setMode("");
+        setAmount("");
+        setRemarks("");
+        setEntries([]);
+        setCurrency("");
+        setEditIndex(-1);
+        clear();
       } catch (error) {
         console.error("Error submitting data:", error);
       }
@@ -135,7 +142,7 @@ const Table = ({
     }
   };
 
-  //fetch data from googlesheet
+  //fetch button
   const fetchPaymentData = async () => {
     try {
       console.log(`Fetching payment data for paymentId: ${paymentId}`);
@@ -189,7 +196,7 @@ const Table = ({
     }
   };
 
-  //update data in googlesheet
+  //update button
   const handleUpdateData = async (entries) => {
     try {
       console.log("Received parameters:", { entries });
@@ -223,6 +230,13 @@ const Table = ({
         const response = await axios.put(url, entryData);
         console.log("Data update request sent:", response);
         console.log("Data updated successfully:", response.data);
+        setMode("");
+        setAmount("");
+        setRemarks("");
+        setEntries([]);
+        setCurrency("");
+        setEditIndex(-1);
+        clear();
       }
       const Data = {
         paymentId,
@@ -317,7 +331,7 @@ const Table = ({
                         <DeleteIcon fontSize="small" />
                       </IconButton>
                     </td>
-                    <td>{entry.serialNo}</td>
+                    <td>{entry.serialNo || index + 1}</td>
                     <td>{entry.currency?.label}</td>
                     <td>{entry.mode}</td>
                     <td>{entry.amount}</td>
@@ -327,14 +341,6 @@ const Table = ({
               </tbody>
             </table>
           </Box>
-          {/* <div className="btn">
-            <Button type="submit" onClick={submitToGoogleSheets}>
-              SUBMIT
-            </Button>
-            <Button type="clear" onClick={handleClear}>
-              CLEAR
-            </Button>
-          </div> */}
           <div className="btn">
             {location.pathname === "/TripPage" ? (
               <div>

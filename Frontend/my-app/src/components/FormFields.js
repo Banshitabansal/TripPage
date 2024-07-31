@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from "react";
+import Checkbox from "@mui/material/Checkbox";
+import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
+import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import axios from "axios";
 import {
   Grid,
@@ -12,9 +15,9 @@ import {
 } from "@mui/material";
 import Table from "./Table.js";
 
-const GOOGLE_SHEET_ID = "1aDOWPqem6US77ATiVTV1sgx2bq8RWVyYzgnMgzIW3k8";
-const GOOGLE_API_KEY = "AIzaSyB33lFh3E-yrpDAeCEgFYZAxJsXpcu2-_Y";
-const RANGE = "EmployeeData!A2:B";
+// const GOOGLE_SHEET_ID = "1aDOWPqem6US77ATiVTV1sgx2bq8RWVyYzgnMgzIW3k8";
+// const GOOGLE_API_KEY = "AIzaSyB33lFh3E-yrpDAeCEgFYZAxJsXpcu2-_Y";
+// const RANGE = "EmployeeData!A2:B";
 
 const FormFields = () => {
   const [selectedOptions, setSelectedOptions] = useState([]);
@@ -26,24 +29,20 @@ const FormFields = () => {
   const [planID, setPlanID] = useState("");
   const [paymentId, setPaymentId] = useState("");
 
+  const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
+  const checkedIcon = <CheckBoxIcon fontSize="small" />;
+
   //fetch employee id from googlesheet
   useEffect(() => {
-    const fetchData = async () => {
+    const employeeData = async () => {
       try {
-        const response = await axios.get(
-          `https://sheets.googleapis.com/v4/spreadsheets/${GOOGLE_SHEET_ID}/values/${RANGE}?key=${GOOGLE_API_KEY}`
-        );
-        const data = response.data.values;
-        const formattedOptions = data.map((row) => ({
-          value: row[0],
-          label: `${row[0]} - ${row[1]}`,
-        }));
-        setOptions(formattedOptions);
+        const response = await axios.get('http://localhost:3001/api/employeeData');
+        setOptions(response.data);
       } catch (error) {
-        console.error("Error fetching data from Google Sheets:", error);
+        console.error('Error fetching data from backend:', error);
       }
     };
-    fetchData();
+    employeeData();
   }, []);
 
   //employee id handler
@@ -117,7 +116,7 @@ const FormFields = () => {
   return (
     <>
       <Box className="FormContainer">
-        <Box sx={{mt: 6, p: 3}}>
+        <Box sx={{ mt: 6, p: 3 }}>
           <Grid container spacing={2}>
             <Grid item xs={6} sm={4} md={2}>
               <Autocomplete
@@ -126,21 +125,48 @@ const FormFields = () => {
                 value={selectedOptions}
                 onChange={handleChange}
                 options={options}
+                disableCloseOnSelect
+                getOptionLabel={(option) => option.title}
+                renderOption={(props, option, { selected }) => {
+                  const { key, ...optionProps } = props;
+                  return (
+                    <li key={key} {...optionProps}>
+                      <Checkbox
+                        icon={icon}
+                        checkedIcon={checkedIcon}
+                        checked={selected}
+                      />
+                      {option.label}
+                    </li>
+                  );
+                }}
                 renderInput={(params) => (
                   <TextField {...params} label="Employee ID" />
                 )}
                 renderTags={(value, getTagProps) =>
                   value.map((option, index) => (
-                    <span
+                    <Box
                       key={index}
-                      {...getTagProps({ index })}
-                      className="tag">
+                      component="span"
+                      {...getTagProps({ index })}>
                       {option.label}
                       {index < value.length - 1 ? ", " : ""}
-                    </span>
+                    </Box>
                   ))
                 }
                 fullWidth
+                sx={{
+                  "& .MuiAutocomplete-inputRoot": {
+                    display: "flex",
+                    flexWrap: "nowrap",
+                    overflowX: "hidden",
+                  },
+                  "& .MuiAutocomplete-tag": {
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                  },
+                }}
               />
             </Grid>
 
@@ -164,9 +190,6 @@ const FormFields = () => {
                   value={selectOptions}
                   onChange={handleSelectChange}
                   label="Select Dept.">
-                  <MenuItem value="">
-                    <em>None</em>
-                  </MenuItem>
                   <MenuItem value="Sales">Sales</MenuItem>
                   <MenuItem value="Service">Service</MenuItem>
                   <MenuItem value="Operations">Operations</MenuItem>

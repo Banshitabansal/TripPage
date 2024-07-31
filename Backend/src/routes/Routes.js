@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  employeeData,
   getLastIds,
   submitData,
   fetchEntries,
@@ -8,6 +9,8 @@ import {
 } from "../controllers/TripController.js";
 
 const router = express.Router();
+
+router.get("/employeeData", employeeData);
 
 router.get("/getLastIds", getLastIds);
 
