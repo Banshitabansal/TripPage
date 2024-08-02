@@ -14,6 +14,8 @@ import {
   Select,
   MenuItem,
   Button,
+  useMediaQuery, 
+  useTheme,
 } from "@mui/material";
 
 // currency
@@ -39,8 +41,11 @@ const DialogBox = ({
   setEntries,
   editIndex,
   setEditIndex,
+  setEdtOpen,
 }) => {
   const [currencyOptions, setCurrencyOptions] = useState([]);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   // handle currency
   const handleCurrencyChange = (event, newValue) => {
@@ -102,6 +107,7 @@ const DialogBox = ({
       const updatedEntries = [...entries];
       updatedEntries[editIndex] = newEntry;
       setEntries(updatedEntries);
+      setEdtOpen(true);
     } else {
       setEntries([...entries, newEntry]);
     }
@@ -110,20 +116,28 @@ const DialogBox = ({
 
   return (
     <>
-      <Box sx={{}}>
-        <Dialog open={open} onClose={handleClose}>
+      <Box>
+        <Dialog
+          open={open}
+          onClose={handleClose}
+          fullWidth
+          sx={{
+            width: isMobile ? '428px' : 'auto', 
+            margin: '-22px',
+          }}
+        >
           <form onSubmit={handleFormSubmit} className="Dialog">
             <DialogTitle className="Title">
               ADD PAYMENT REQUEST ENTRY
             </DialogTitle>
-            <DialogContent>
+            <DialogContent >
               <Grid container spacing={2}>
                 <Grid item xs={6}>
                   <Autocomplete
                     disablePortal
                     options={currencyOptions}
                     value={currency}
-                    onChange={handleCurrencyChange}
+                    onChange={handleCurrencyChange}         
                     required
                     renderInput={(params) => (
                       <TextField {...params} label="Currency" />

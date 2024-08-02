@@ -6,6 +6,8 @@ import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import DialogBox from "./DialogBox.js";
+import Snackbar from "@mui/material/Snackbar";
+import { useTheme } from "@mui/material/styles";
 
 const Table = ({
   clear,
@@ -22,6 +24,7 @@ const Table = ({
   planID,
   setPlanID,
 }) => {
+  const theme = useTheme();
   const location = useLocation();
   const [entries, setEntries] = useState([]);
   const [currency, setCurrency] = useState("");
@@ -32,7 +35,11 @@ const Table = ({
   const [open, setOpen] = useState(false);
   const [deletedEntries, setDeletedEntries] = useState([]);
   const [serialNo, setSerialNo] = useState("");
-
+  const [dltOpen, setDltOpen] = React.useState(false);
+  const [edtOpen, setEdtOpen] = React.useState(false);
+  const [submitOpen, setSubmitOpen] = React.useState(false);
+  const [updateOpen, setUpdateOpen] = React.useState(false);
+  
   //dialog close
   const handleClickClose = () => {
     setOpen(false);
@@ -55,12 +62,31 @@ const Table = ({
     setOpen(true);
   };
 
+  //edit msg close
+  const handleEdtClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setEdtOpen(false);
+  };
+
   //delete button
   const handleDelete = (index) => {
     const entryToDelete = entries[index];
     setDeletedEntries([...deletedEntries, entryToDelete.serialNo]);
     setEntries(entries.filter((_, i) => i !== index));
     console.log("delete", deletedEntries);
+    setDltOpen(true);
+  };
+
+  //delete msg close
+  const handleDltClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setDltOpen(false);
   };
 
   //clear button
@@ -134,12 +160,22 @@ const Table = ({
         setCurrency("");
         setEditIndex(-1);
         clear();
+        setSubmitOpen(true);
       } catch (error) {
         console.error("Error submitting data:", error);
       }
     } catch (error) {
       console.error("Error fetching last IDs:", error);
     }
+  };
+
+  //submit msg close
+  const handleSubmitClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setSubmitOpen(false);
   };
 
   //fetch button
@@ -237,6 +273,7 @@ const Table = ({
         setCurrency("");
         setEditIndex(-1);
         clear();
+        setUpdateOpen(true);
       }
       const Data = {
         paymentId,
@@ -251,6 +288,15 @@ const Table = ({
     } catch (error) {
       console.error("Error updating data:", error);
     }
+  };
+
+  //update msg close
+  const handleUpdateClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setUpdateOpen(false);
   };
 
   return (
@@ -271,6 +317,7 @@ const Table = ({
         setEntries={setEntries}
         editIndex={editIndex}
         setEditIndex={setEditIndex}
+        setEdtOpen={setEdtOpen}
       />
 
       <Box className="TableBackground">
@@ -286,14 +333,14 @@ const Table = ({
             sx={{
               width: {
                 xs: "90%", // Set width to 90% for extra-small screens
-                sm: "80%", // Set width to 80% for small screens
-                md: "70%", // Set width to 70% for medium screens
-                lg: "45%", // Set width to 45% for large screens
-                xl: "50%", // Set width to 50% for extra-large screens
+                sm: "70%", // Set width to 70% for small screens
+                md: "50%", // Set width to 50% for medium screens
+                lg: "44%", // Set width to 50% for large screens
+                xl: "40%", // Set width to 50% for extra-large screens
               },
               overflow: "auto",
               mt: 10,
-              height: 300,
+              height: 280,
               coverflowY: "scroll",
               "&::-webkit-scrollbar": {
                 width: "12px",
@@ -365,6 +412,62 @@ const Table = ({
               </div>
             ) : null}
           </div>
+          <Snackbar // delete button message
+            open={dltOpen}
+            autoHideDuration={2000}
+            onClose={handleDltClose}
+            message="Data Deleted Successfully"
+            sx={{
+              "& .MuiSnackbarContent-root": {
+                backgroundColor: "white",
+                color: "red",
+                paddingLeft: "20px",
+                maxWidth: "250px",
+              },
+            }}
+          />
+          <Snackbar // edit button message
+            open={edtOpen}
+            autoHideDuration={2000}
+            onClose={handleEdtClose}
+            message="Data Edited Successfully"
+            sx={{
+              "& .MuiSnackbarContent-root": {
+                backgroundColor: "white",
+                color: "black",
+                paddingLeft: "20px",
+                maxWidth: "250px",
+              },
+            }}
+          />
+          <Snackbar // submit button message
+            open={submitOpen}
+            autoHideDuration={2000}
+            onClose={handleSubmitClose}
+            message="Data Submitted Successfully"
+            sx={{
+              "& .MuiSnackbarContent-root": {
+                backgroundColor: "white",
+                color: "green",
+                paddingLeft: "20px",
+                maxWidth: "250px",
+              },
+            }}
+          />
+          <Snackbar // update button message
+            open={updateOpen}
+            autoHideDuration={2000}
+            onClose={handleUpdateClose}
+            message="Data Updated Successfully"
+            sx={{
+              "& .MuiSnackbarContent-root": {
+                backgroundColor: "white",
+                color: "black",
+                paddingLeft: "20px",
+                maxWidth: "250px",
+              },
+            }}
+          />
         </Box>
       </Box>
     </>

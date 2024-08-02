@@ -1,8 +1,8 @@
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Xyz from './components/xyz';
-import TripPage from './components/TripPage';
-import TripPage2 from './components/TripPage2';
+import TripPage from './Pages/TripPage';
+import TripPage2 from './Pages/TripPage2';
 
 function App() {
   return (

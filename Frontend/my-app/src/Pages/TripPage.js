@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { ThemeProvider, useTheme } from "@mui/material/styles";
 import { darkTheme, lightTheme } from "../theme.js";
-import "./TripPage.css";
-import Navbar from "./Navbar.js";
-import FormFields from "./FormFields.js";
+import "../Styles/TripPage.css";
+import Navbar from "../components/Navbar.js";
+import FormFields from "../components/FormFields.js";
 
 const TripPage = () => {
   const theme = useTheme();
