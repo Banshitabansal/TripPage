@@ -39,6 +39,7 @@ const Table = ({
   const [edtOpen, setEdtOpen] = React.useState(false);
   const [submitOpen, setSubmitOpen] = React.useState(false);
   const [updateOpen, setUpdateOpen] = React.useState(false);
+  const [usedCombinations, setUsedCombinations] = useState([]);
   
   //dialog close
   const handleClickClose = () => {
@@ -98,6 +99,7 @@ const Table = ({
     setCurrency("");
     setEditIndex(-1);
     clear();
+    setUsedCombinations([]);
   };
 
   //submit button
@@ -318,6 +320,8 @@ const Table = ({
         editIndex={editIndex}
         setEditIndex={setEditIndex}
         setEdtOpen={setEdtOpen}
+        setUsedCombinations={setUsedCombinations}
+        usedCombinations={usedCombinations}
       />
 
       <Box className="TableBackground">
