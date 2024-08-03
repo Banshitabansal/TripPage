@@ -182,6 +182,7 @@ th {
 
 td {
   padding: 5px 20px;
+  white-space: nowrap;
 }
 
 .dark-mode td {
@@ -224,13 +225,17 @@ td {
     font-size: 22px;
   }
   th {
-    padding: 2px 20px;
-    font-size: 15px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    padding-left: 0px;
+    font-size: 13px;
     white-space: nowrap;
   }
   td {
-    padding: 2px 20px;
-    font-size: 15px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    padding-left: 0px;
+    font-size: 13px;
     white-space: nowrap;
   }
 }

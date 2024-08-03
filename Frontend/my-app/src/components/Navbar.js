@@ -74,7 +74,7 @@ const Navbar = ({ isDarkMode, setIsDarkMode }) => {
                 </IconButton>
                 <List sx={{ flexGrow: 1 }}>
                   {[
-                    <a href="#">Trip Plan</a>,
+                    <a href="http://localhost:3000/TripPage">Trip Payment</a>,
                     <a href="http://localhost:3000/TripPage2">Trip Update</a>,
                     <a href="#">Trip Search</a>,
                     <a href="#">Sign In</a>,
@@ -90,7 +90,7 @@ const Navbar = ({ isDarkMode, setIsDarkMode }) => {
             </Drawer>
           ) : (
             <div className="NavbarLinks">
-              <a href="#">Trip Plan</a>
+              <a href="http://localhost:3000/TripPage">Trip Payment</a>
               <a href="http://localhost:3000/TripPage2">Trip Update</a>
               <a href="#">Trip Search</a>
               <a href="#">Sign In</a>

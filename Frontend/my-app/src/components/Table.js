@@ -104,7 +104,7 @@ const Table = ({
   const submitToGoogleSheets = async () => {
     try {
       // Fetch the last paymentId and planId from the backend
-      const response = await axios.get("http://localhost:3001/api/getLastIds");
+      const response = await axios.get(`${process.env.REACT_APP_FRONTEND}/api/getLastIds`);
       const { lastPaymentId, lastPlanID } = response.data;
 
       // Increment the last paymentId and planId by 1
@@ -147,7 +147,7 @@ const Table = ({
       // Submit the combined data to Google Sheets
       try {
         const submitResponse = await axios.post(
-          "http://localhost:3001/api/submit",
+          `${process.env.REACT_APP_FRONTEND}/api/submit`,
           {
             data: combinedData,
           }
@@ -183,7 +183,7 @@ const Table = ({
     try {
       console.log(`Fetching payment data for paymentId: ${paymentId}`);
       const response = await axios.get(
-        `http://localhost:3001/api/fetch?paymentId=${paymentId}`
+        `${process.env.REACT_APP_FRONTEND}/api/fetch?paymentId=${paymentId}`
       );
       console.log("Response received:", response.data);
 
@@ -245,7 +245,7 @@ const Table = ({
         .map((entry) => entry.split(" - ")[1]);
 
       for (const entry of entries) {
-        const url = `http://localhost:3001/api/updateGoogleSheet?paymentId=${paymentId}&serialNo=${serialNo}`;
+        const url = `${process.env.REACT_APP_FRONTEND}/api/updateGoogleSheet?paymentId=${paymentId}&serialNo=${serialNo}`;
         const entryData = {
           paymentId: paymentId,
           planID: planID,
@@ -281,7 +281,7 @@ const Table = ({
       };
 
       const response = await axios.post(
-        "http://localhost:3001/api/deleteGoogleSheet",
+        `${process.env.REACT_APP_FRONTEND}/api/deleteGoogleSheet`,
         Data
       );
       setDeletedEntries([]);

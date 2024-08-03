@@ -1,10 +1,15 @@
 import express from "express";
 import cors from "cors";
-import Routes from "./routes/Routes.js";
-import connectDB from "./config/dbConfig.js";
+import Routes from "./src/routes/Routes.js";
+import connectDB from "./src/config/dbConfig.js";
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+// const filePath = `${process.env.FILE_PATH}`;
 
 const app = express();
-const port = 3001;
+const port = `${process.env.Port}`;
 
 connectDB();
 app.use(cors());

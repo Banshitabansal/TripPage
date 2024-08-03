@@ -36,7 +36,7 @@ const FormFields = () => {
   useEffect(() => {
     const employeeData = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/api/employeeData');
+        const response = await axios.get(`${process.env.REACT_APP_FRONTEND}/api/employeeData`);
         setOptions(response.data);
       } catch (error) {
         console.error('Error fetching data from backend:', error);
@@ -89,7 +89,7 @@ const FormFields = () => {
     const fetchLastIds = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:3001/api/getLastIds"
+          `${process.env.REACT_APP_FRONTEND}/api/getLastIds`
         );
         const { lastPaymentId, lastPlanID } = response.data;
         setPaymentId(lastPaymentId);
