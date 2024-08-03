@@ -15,11 +15,7 @@ import {
 } from "@mui/material";
 import Table from "./Table.js";
 
-// const GOOGLE_SHEET_ID = "1aDOWPqem6US77ATiVTV1sgx2bq8RWVyYzgnMgzIW3k8";
-// const GOOGLE_API_KEY = "AIzaSyB33lFh3E-yrpDAeCEgFYZAxJsXpcu2-_Y";
-// const RANGE = "EmployeeData!A2:B";
-
-const FormFields = () => {
+const FormFields = ({ page }) => {
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [groupValue, setGroupValue] = useState("");
   const [options, setOptions] = useState([]);
@@ -32,25 +28,27 @@ const FormFields = () => {
   const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
   const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
-  //fetch employee id from googlesheet
+  // Fetch employee id from Google Sheets
   useEffect(() => {
     const employeeData = async () => {
       try {
-        const response = await axios.get(`${process.env.REACT_APP_FRONTEND}/api/employeeData`);
+        const response = await axios.get(
+          `${process.env.REACT_APP_FRONTEND}/api/employeeData`
+        );
         setOptions(response.data);
       } catch (error) {
-        console.error('Error fetching data from backend:', error);
+        console.error("Error fetching data from backend:", error);
       }
     };
     employeeData();
   }, []);
 
-  //employee id handler
+  // Employee id handler
   const handleChange = (event, newValue) => {
     setSelectedOptions(newValue);
   };
 
-  //select type useEffect
+  // Select type useEffect
   useEffect(() => {
     if (selectedOptions.length > 0) {
       const concatenatedValues = selectedOptions
@@ -64,45 +62,47 @@ const FormFields = () => {
     }
   }, [selectedOptions]);
 
-  //select dept handler
+  // Select dept handler
   const handleSelectChange = (event) => {
     setSelectOptions(event.target.value);
   };
 
-  //sr no handler
+  // SR No handler
   const handleChangeSR = (event) => {
     setSelectSR(event.target.value);
   };
 
-  //plan id handler
+  // Plan ID handler
   const handleChangePlanId = (event) => {
     setPlanID(event.target.value);
   };
 
-  //payment id handler
+  // Payment ID handler
   const handlePaymentIdChange = async (event) => {
     setPaymentId(event.target.value);
   };
 
-  //fetch payment id and plan id from googlesheet and mongodb
+  // Fetch payment ID and plan ID from Google Sheets and MongoDB
   useEffect(() => {
-    const fetchLastIds = async () => {
-      try {
-        const response = await axios.get(
-          `${process.env.REACT_APP_FRONTEND}/api/getLastIds`
-        );
-        const { lastPaymentId, lastPlanID } = response.data;
-        setPaymentId(lastPaymentId);
-        setPlanID(lastPlanID);
-      } catch (error) {
-        console.error("Error fetching last IDs:", error);
-      }
-    };
+    if (page === "TripPage") {
+      const fetchLastIds = async () => {
+        try {
+          const response = await axios.get(
+            `${process.env.REACT_APP_FRONTEND}/api/getLastIds`
+          );
+          const { lastPaymentId, lastPlanID } = response.data;
+          setPaymentId(lastPaymentId);
+          setPlanID(lastPlanID);
+        } catch (error) {
+          console.error("Error fetching last IDs:", error);
+        }
+      };
 
-    fetchLastIds();
-  }, []);
+      fetchLastIds();
+    }
+  }, [page]);
 
-  //clear button
+  // Clear button
   const handleClear = () => {
     setSelectedOptions([]);
     setGroupValue("");
@@ -116,9 +116,42 @@ const FormFields = () => {
   return (
     <>
       <Box className="FormContainer">
-        <Box sx={{ mt: 6, p: 3 }}>
-          <Grid container spacing={2}>
-            <Grid item xs={6} sm={4} md={2}>
+        <Box
+          sx={{
+            mt: {
+              xs: 0,
+              md: 6,
+            },
+            pt: 3, pb: 3, pl: 5, pr: 0,
+          }}>
+          <Grid
+            container
+            spacing={2}
+            direction={page === "TripPage2" ? "row" : "row"}
+            sx={{
+              // Adjust grid layout based on page
+              display: "flex",
+              flexWrap: "wrap",
+              // Make sure all items take full width on mobile view
+              "& .MuiGrid-item": {
+                flexBasis:
+                  page === "TripPage2"
+                    ? "calc(100% / 6 - 16px)"
+                    : "calc(100% / 4 - 16px)",
+                maxWidth:
+                  page === "TripPage2"
+                    ? "calc(100% / 6 - 16px)"
+                    : "calc(100% / 4 - 16px)",
+              },
+              // Ensure items stack properly on mobile
+              "@media (max-width:600px)": {
+                "& .MuiGrid-item": {
+                  flexBasis: "calc(100% / 2 - 16px)",
+                  maxWidth: "calc(100% / 2 - 16px)",
+                },
+              },
+            }}>
+            <Grid item xs={6} md={3}>
               <Autocomplete
                 multiple
                 size="small"
@@ -141,7 +174,7 @@ const FormFields = () => {
                   );
                 }}
                 renderInput={(params) => (
-                  <TextField {...params} label="Employee ID" />
+                  <TextField {...params} label="Employee ID" required />
                 )}
                 renderTags={(value, getTagProps) =>
                   value.map((option, index) => (
@@ -170,8 +203,8 @@ const FormFields = () => {
               />
             </Grid>
 
-            <Grid item xs={6} sm={4} md={2}>
-              <FormControl fullWidth size="small">
+            <Grid item xs={6} md={3}>
+              <FormControl fullWidth size="small" required>
                 <InputLabel>Select Type</InputLabel>
                 <Select value={selectOption} readOnly label="Select Type">
                   <MenuItem value="">
@@ -183,8 +216,8 @@ const FormFields = () => {
               </FormControl>
             </Grid>
 
-            <Grid item xs={6} sm={4} md={2}>
-              <FormControl fullWidth size="small">
+            <Grid item xs={6} md={3}>
+              <FormControl fullWidth size="small" required>
                 <InputLabel>Select Dept.</InputLabel>
                 <Select
                   value={selectOptions}
@@ -198,42 +231,49 @@ const FormFields = () => {
             </Grid>
 
             {selectOptions === "Service" && (
-              <Grid item xs={6} sm={4} md={2}>
-                <Box fullWidth>
+              <Grid item xs={6} md={3}>
+                <Box>
                   <TextField
                     onChange={handleChangeSR}
                     value={selectSR}
                     label="SR No."
                     required
+                    fullWidth
                     size="small"
                   />
                 </Box>
               </Grid>
             )}
 
-            <Grid item xs={6} sm={4} md={2}>
-              <Box fullWidth>
-                <TextField
-                  onChange={handleChangePlanId}
-                  value={planID}
-                  label="Plan ID"
-                  required
-                  size="small"
-                />
-              </Box>
-            </Grid>
+            {page === "TripPage2" && (
+              <>
+                <Grid item xs={6} md={3}>
+                  <Box>
+                    <TextField
+                      onChange={handleChangePlanId}
+                      value={planID}
+                      label="Plan ID"
+                      required
+                      fullWidth
+                      size="small"
+                    />
+                  </Box>
+                </Grid>
 
-            <Grid item xs={6} sm={4} md={2}>
-              <Box fullWidth>
-                <TextField
-                  label="Payment ID"
-                  value={paymentId}
-                  onChange={handlePaymentIdChange}
-                  required
-                  size="small"
-                />
-              </Box>
-            </Grid>
+                <Grid item xs={6} md={3}>
+                  <Box>
+                    <TextField
+                      label="Payment ID"
+                      value={paymentId}
+                      onChange={handlePaymentIdChange}
+                      required
+                      fullWidth
+                      size="small"
+                    />
+                  </Box>
+                </Grid>
+              </>
+            )}
           </Grid>
         </Box>
       </Box>

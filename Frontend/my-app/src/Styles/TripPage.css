@@ -11,7 +11,7 @@ body {
       transparent 0.01px
     ),
     linear-gradient(to bottom, rgba(0, 0, 0, 0.2) 1px, transparent 0.01px);
-  /* position: fixed;  */
+  position: fixed; 
   width: 100%;
   height: 100%;
   z-index: 0;
@@ -46,6 +46,7 @@ body {
 /* hamburger */
 a {
   text-decoration: none;
+  color: black;
 }
 
 .dark-mode a{
@@ -143,7 +144,8 @@ a {
 
 /* Table */
 .TableBackground {
-  height: 560px;
+  position: fixed;
+  height: 100%;
   z-index: 0;
   width: 100%;
 }
@@ -239,3 +241,4 @@ td {
     white-space: nowrap;
   }
 }
+

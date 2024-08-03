@@ -15,7 +15,7 @@ const TripPage2 = () => {
         className={`ModalContainer ${isDarkMode ? "dark-mode" : "light-mode"}`}>
         <Navbar isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />
 
-        <FormFields />
+        <FormFields page="TripPage2" />
       </div>
     </ThemeProvider>
   );

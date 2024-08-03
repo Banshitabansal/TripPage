@@ -14,7 +14,7 @@ import {
   Select,
   MenuItem,
   Button,
-  useMediaQuery, 
+  useMediaQuery,
   useTheme,
 } from "@mui/material";
 
@@ -44,17 +44,20 @@ const DialogBox = ({
   setEdtOpen,
 }) => {
   const [currencyOptions, setCurrencyOptions] = useState([]);
+  const [errorMessage, setErrorMessage] = useState("");
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   // handle currency
   const handleCurrencyChange = (event, newValue) => {
     setCurrency(newValue);
+    setErrorMessage(""); // Clear the error message when currency changes
   };
 
   // handle payment mode
   const handleChangeMode = (event) => {
     setMode(event.target.value);
+    setErrorMessage(""); // Clear the error message when payment mode changes
   };
 
   // fetch currency from currency API
@@ -96,12 +99,29 @@ const DialogBox = ({
     setRemarks("");
     setEditIndex(-1);
     setCurrency("");
+    setErrorMessage(""); // Clear the error message on close
   };
 
   // save button
   const handleFormSubmit = (event) => {
     event.preventDefault();
     const newEntry = { currency, mode, amount, remarks, serialNo };
+
+    if (mode === "Bank") {
+      const existingEntry = entries.find(
+        (entry) => entry.currency === currency && entry.mode === "Bank"
+      );
+
+      if (
+        existingEntry &&
+        (editIndex === -1 || existingEntry.serialNo !== serialNo)
+      ) {
+        setErrorMessage(
+          "The same currency cannot have 'Bank' selected more than once."
+        );
+        return;
+      }
+    }
 
     if (editIndex >= 0) {
       const updatedEntries = [...entries];
@@ -122,31 +142,28 @@ const DialogBox = ({
           onClose={handleClose}
           fullWidth
           sx={{
-            width: isMobile ? '428px' : 'auto', 
-            margin: '-22px',
-          }}
-        >
+            width: isMobile ? "428px" : "auto",
+            margin: "-22px",
+          }}>
           <form onSubmit={handleFormSubmit} className="Dialog">
             <DialogTitle className="Title">
               ADD PAYMENT REQUEST ENTRY
             </DialogTitle>
-            <DialogContent >
+            <DialogContent>
               <Grid container spacing={2}>
                 <Grid item xs={6}>
                   <Autocomplete
-                    disablePortal
                     options={currencyOptions}
                     value={currency}
-                    onChange={handleCurrencyChange}         
-                    required
+                    onChange={handleCurrencyChange}
                     renderInput={(params) => (
-                      <TextField {...params} label="Currency" />
+                      <TextField {...params} label="Currency" required />
                     )}
                     sx={{ mt: 1 }}
                   />
                 </Grid>
                 <Grid item xs={6}>
-                  <FormControl fullWidth sx={{ mt: 1 }}>
+                  <FormControl fullWidth sx={{ mt: 1 }} required>
                     <InputLabel>Payment Mode</InputLabel>
                     <Select
                       value={mode}
@@ -180,6 +197,9 @@ const DialogBox = ({
                   />
                 </Grid>
               </Grid>
+              {errorMessage && (
+                <Box sx={{ color: "red", mt: 2 }}>{errorMessage}</Box>
+              )}
             </DialogContent>
             <DialogActions>
               <Button type="submit">Save</Button>
