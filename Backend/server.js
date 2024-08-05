@@ -6,8 +6,6 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-// const filePath = `${process.env.FILE_PATH}`;
-
 const app = express();
 const port = `${process.env.Port}`;
 
