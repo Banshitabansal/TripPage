@@ -9,6 +9,7 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from '@mui/icons-material/Close';
+import { Link } from 'react-router-dom';
 
 const Navbar = ({ isDarkMode, setIsDarkMode }) => {
   const [open, setOpen] = React.useState(false);

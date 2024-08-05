@@ -40,6 +40,7 @@ const Table = ({
   const [submitOpen, setSubmitOpen] = React.useState(false);
   const [updateOpen, setUpdateOpen] = React.useState(false);
   const [usedCombinations, setUsedCombinations] = useState([]);
+  const [newPaymentId, setNewPaymentId] = useState(null); 
 
   //dialog close
   const handleClickClose = () => {
@@ -147,6 +148,7 @@ const Table = ({
       // Update state with the new values
       setPaymentId(newPaymentId);
       setPlanID(newPlanId + entries.length);
+      setNewPaymentId(newPaymentId); // Update state with newPaymentId
 
       // Submit the combined data to Google Sheets
       try {
@@ -449,9 +451,7 @@ const Table = ({
             open={submitOpen}
             autoHideDuration={2000}
             onClose={handleSubmitClose}
-            message={`Data Submitted Successfully PaymentId: PAY-${String(
-              paymentId
-            ).padStart(5, "0")}`}
+            message={`Data Submitted Successfully PaymentId: PAY-${String(newPaymentId).padStart(5, "0")}`} 
             sx={{
               "& .MuiSnackbarContent-root": {
                 backgroundColor: "white",
