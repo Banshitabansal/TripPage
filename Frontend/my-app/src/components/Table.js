@@ -355,9 +355,8 @@ const Table = ({
               <thead>
                 <tr>
                   <th>
-                    <IconButton>
+                    <IconButton onClick={handleClickOpen}>
                       <AddIcon
-                        onClick={handleClickOpen}
                         sx={{
                           width: 55,
                         }}
