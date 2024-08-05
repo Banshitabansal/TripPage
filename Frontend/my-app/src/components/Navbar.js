@@ -74,8 +74,8 @@ const Navbar = ({ isDarkMode, setIsDarkMode }) => {
                 </IconButton>
                 <List sx={{ flexGrow: 1 }}>
                   {[
-                    <a href="trip-page-frontend.vercel.app/TripPage">Trip Payment</a>,
-                    <a href="trip-page-frontend.vercel.app/TripPage2">Trip Update</a>,
+                    <a href="/TripPage">Trip Payment</a>,
+                    <a href="/TripPage2">Trip Update</a>,
                     <a href="#">Trip Search</a>,
                     <a href="#">Sign In</a>,
                   ].map((text, index) => (
@@ -90,8 +90,8 @@ const Navbar = ({ isDarkMode, setIsDarkMode }) => {
             </Drawer>
           ) : (
             <div className="NavbarLinks">
-              <a href="trip-page-frontend.vercel.app/TripPage">Trip Payment</a>
-              <a href="trip-page-frontend.vercel.app/TripPage2">Trip Update</a>
+              <a href="/TripPage">Trip Payment</a>
+              <a href="/TripPage2">Trip Update</a>
               <a href="#">Trip Search</a>
               <a href="#">Sign In</a>
             </div>
