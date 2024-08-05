@@ -74,10 +74,10 @@ const Navbar = ({ isDarkMode, setIsDarkMode }) => {
                 </IconButton>
                 <List sx={{ flexGrow: 1 }}>
                   {[
-                    <a href="/TripPage">Trip Payment</a>,
-                    <a href="/TripPage2">Trip Update</a>,
-                    <a href="#">Trip Search</a>,
-                    <a href="#">Sign In</a>,
+                    <Link to="/TripPage">Trip Payment</Link>,
+                    <Link to="/TripPage2">Trip Update</Link>,
+                    <Link to="#">Trip Search</Link>,
+                    <Link to="#">Sign In</Link>,
                   ].map((text, index) => (
                     <ListItem key={index} disablePadding>
                       <ListItemButton sx={{ justifyContent: 'center' }}>
@@ -90,10 +90,10 @@ const Navbar = ({ isDarkMode, setIsDarkMode }) => {
             </Drawer>
           ) : (
             <div className="NavbarLinks">
-              <a href="/TripPage">Trip Payment</a>
-              <a href="/TripPage2">Trip Update</a>
-              <a href="#">Trip Search</a>
-              <a href="#">Sign In</a>
+              <Link to="/TripPage">Trip Payment</Link>
+              <Link to="/TripPage2">Trip Update</Link>
+              <Link to="#">Trip Search</Link>
+              <Link to="#">Sign In</Link>
             </div>
           )}
         </div>
