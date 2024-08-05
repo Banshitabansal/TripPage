@@ -450,7 +450,7 @@ const Table = ({
             autoHideDuration={2000}
             onClose={handleSubmitClose}
             message={`Data Submitted Successfully PaymentId: PAY-${String(
-              newPaymentId
+              paymentId
             ).padStart(5, "0")}`}
             sx={{
               "& .MuiSnackbarContent-root": {
