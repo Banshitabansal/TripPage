@@ -123,7 +123,10 @@ const submitData = async (req, res) => {
   }
 
   const auth = new google.auth.GoogleAuth({
-    keyFile: "./secret.json",
+    credentials: {
+      private_key: process.env.Private_Key.replace(/\\n/g, '\n'),
+      client_email: process.env.Client_Email,
+    },
     scopes: ["https://www.googleapis.com/auth/spreadsheets"],
   });
 
