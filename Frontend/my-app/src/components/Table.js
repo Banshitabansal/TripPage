@@ -40,7 +40,7 @@ const Table = ({
   const [submitOpen, setSubmitOpen] = React.useState(false);
   const [updateOpen, setUpdateOpen] = React.useState(false);
   const [usedCombinations, setUsedCombinations] = useState([]);
-  
+
   //dialog close
   const handleClickClose = () => {
     setOpen(false);
@@ -106,7 +106,9 @@ const Table = ({
   const submitToGoogleSheets = async () => {
     try {
       // Fetch the last paymentId and planId from the backend
-      const response = await axios.get(`${process.env.REACT_APP_FRONTEND}/api/getLastIds`);
+      const response = await axios.get(
+        `${process.env.REACT_APP_FRONTEND}/api/getLastIds`
+      );
       const { lastPaymentId, lastPlanID } = response.data;
 
       // Increment the last paymentId and planId by 1
@@ -447,7 +449,9 @@ const Table = ({
             open={submitOpen}
             autoHideDuration={2000}
             onClose={handleSubmitClose}
-            message="Data Submitted Successfully"
+            message={`Data Submitted Successfully PaymentId: PAY-${String(
+              newPaymentId
+            ).padStart(5, "0")}`}
             sx={{
               "& .MuiSnackbarContent-root": {
                 backgroundColor: "white",
@@ -457,6 +461,7 @@ const Table = ({
               },
             }}
           />
+
           <Snackbar // update button message
             open={updateOpen}
             autoHideDuration={2000}
