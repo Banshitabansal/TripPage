@@ -87,7 +87,10 @@ const employeeData = async (req, res) => {
 const getLastIds = async (req, res) => {
   try {
     const auth = new google.auth.GoogleAuth({
-      keyFile: process.env.Secret_File,
+      credentials: {
+        private_key: process.env.Private_Key.replace(/\\n/g, '\n'),
+        client_email: process.env.Client_Email,
+      },
       scopes: ["https://www.googleapis.com/auth/spreadsheets"],
     });
 
